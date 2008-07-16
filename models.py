@@ -4,10 +4,18 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.utils.html import strip_tags
 
+from django.utils.text import capfirst
+
+from django.contrib.sites.models import Site
+from django.contrib.sites.managers import CurrentSiteManager
+
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
+from django.contrib.auth.models import User
+
 from datetime import datetime
+
 
 class Post(models.Model):
     class Meta:
@@ -15,10 +23,18 @@ class Post(models.Model):
         ordering = ['-date_publish','-date_modify','-date_create']
         verbose_name = _('post')
         verbose_name_plural = _('posts')
+        permissions = (("change_author", _("Change author")),)
+        
+    objects = models.Manager()
+    on_site = CurrentSiteManager()
         
     title = models.CharField(max_length=255, verbose_name=_('title'))
     description = models.TextField(verbose_name=_('description'))
-    
+
+    author = models.ForeignKey(User)
+
+    # Overhere, a relationship to self is rather senseless - we ought to prevent it
+    # Also, for some reason, changes do not get saved (anymore)
     links = models.ManyToManyField('self', verbose_name=_('links'), null=True, blank=True, related_name='links')
 
     date_create = models.DateTimeField(auto_now_add=True, verbose_name=_('creation date'))
@@ -29,12 +45,12 @@ class Post(models.Model):
     
     content_type = models.ForeignKey(ContentType, editable=False)
 
-    # a author (User) belongs here as well
+    # an author (User) belongs here as well (but should be automatically populated by the admin)
     
     def save(self):
         if self.publish and not self.date_publish:
             self.date_publish = datetime.now()
-            
+                    
         super(Post, self).save()
     
     def content(self):
@@ -53,8 +69,12 @@ class Post(models.Model):
         return strip_tags(content.render_html())
         
     def __unicode__(self):
-        return u"%s %s" % (self.content_type.model_class()._meta.verbose_name, self.title)  
-
+        return u"%s %s" % (capfirst(self.content_type.model_class()._meta.verbose_name), self.title)  
+    
+    @classmethod
+    def published(self):
+        Post.on_site.filter(published=True, date_publish__lte=datetime.now())
+        
 class BasePost(models.Model):
     class Meta:
         abstract = True

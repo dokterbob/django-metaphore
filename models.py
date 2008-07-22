@@ -16,6 +16,11 @@ from django.contrib.auth.models import User
 
 from datetime import datetime
 
+def get_default_sites():
+    try:
+        return [Site.objects.get_current()]
+    except Exception:
+        return []
 
 class Post(models.Model):
     class Meta:
@@ -32,6 +37,8 @@ class Post(models.Model):
     description = models.TextField(verbose_name=_('description'))
 
     author = models.ForeignKey(User)
+    
+    site = models.ManyToManyField(Site, default=get_default_sites())
 
     # Overhere, a relationship to self is rather senseless - we ought to prevent it
     # Also, for some reason, changes do not get saved (anymore)
@@ -45,8 +52,6 @@ class Post(models.Model):
     
     content_type = models.ForeignKey(ContentType, editable=False)
 
-    # an author (User) belongs here as well (but should be automatically populated by the admin)
-    
     def save(self):
         if self.publish and not self.date_publish:
             self.date_publish = datetime.now()
@@ -56,25 +61,22 @@ class Post(models.Model):
     def content(self):
         return self.content_type.model_class().objects.get(post=self)
 
-    def render_html(self):
-        self.content().render_html()
-        
-    def render_text(self):
-        # Check for special text function
-        content = self.content()
-        if hasattr(content, 'render_text'):
-            return content.render_text()
-        
-        # Otherwise resort to stripped HTML
-        return strip_tags(content.render_html())
-        
+    # This does not belong in here according to DRY
+    # But this way is definitly the easiest
+    def render(self, format='html'):
+        self.content().render(format)
+                
     def __unicode__(self):
         return u"%s %s" % (capfirst(self.content_type.model_class()._meta.verbose_name), self.title)  
     
+    # We should create a custom manager for this. TBD
     @classmethod
     def published(self):
         Post.on_site.filter(published=True, date_publish__lte=datetime.now())
         
+from django.template.loader import get_template, select_template
+# Somehow, generic relations do not seem to work here
+# Workaround needed to link back to Post as we do in this BaseClass's subclasses
 class BasePost(models.Model):
     class Meta:
         abstract = True
@@ -82,30 +84,43 @@ class BasePost(models.Model):
     def __unicode__(self):
         return self.title
         
-class Article(Post, BasePost):
-    class Meta:
-        verbose_name = _('article')
-        verbose_name_plural = _('articles')
+    def render(self, format='html'):
+        template = get_template('post/render/post.%s' % format)
+    
+        context = Context({'post': self})
         
+        print 'Rendering %s, %s' % (self, self.__class__)
+        
+        return template.render(context)
+        
+class Article(Post, BasePost):
+    # This part is generic and should be automated    
     post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
 
     def save(self):
         self.content_type = ContentType.objects.get_for_model(Article)
-        super(Article, self).save()
-        
+        super(Article, self).save()        
+    # End of generic part
+
+    class Meta:
+        verbose_name = _('article')
+        verbose_name_plural = _('articles')
+    
     text = models.TextField(verbose_name=_('text'))
 
 class Download(Post, BasePost):
-    class Meta:
-        verbose_name = _('download')
-        verbose_name_plural = _('downloads')
-        
+    # This part is generic and should be automated    
     post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
 
     def save(self):
         self.content_type = ContentType.objects.get_for_model(Download)
         super(Download, self).save()
+    # End of generic part
 
+    class Meta:
+        verbose_name = _('download')
+        verbose_name_plural = _('downloads')
+    
     filename = models.FileField(verbose_name=_('filename'), upload_to='downloads')    
 
 from admin import *

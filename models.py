@@ -1,6 +1,7 @@
 from django.db import models
 
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 
 from django.utils.html import strip_tags
 
@@ -28,7 +29,7 @@ class Post(models.Model):
         ordering = ['-date_publish','-date_modify','-date_create']
         verbose_name = _('post')
         verbose_name_plural = _('posts')
-        permissions = (("change_author", _("Change author")),)
+        permissions = (("change_author", ugettext("Change author")),)
         
     objects = models.Manager()
     on_site = CurrentSiteManager()
@@ -38,7 +39,7 @@ class Post(models.Model):
 
     author = models.ForeignKey(User)
     
-    site = models.ManyToManyField(Site, default=get_default_sites())
+    site = models.ManyToManyField(Site, verbose_name=_('sites'), default=get_default_sites())
 
     # Overhere, a relationship to self is rather senseless - we ought to prevent it
     # Also, for some reason, changes do not get saved (anymore)
@@ -72,7 +73,7 @@ class Post(models.Model):
     # We should create a custom manager for this. TBD
     @classmethod
     def published(self):
-        Post.on_site.filter(published=True, date_publish__lte=datetime.now())
+        Post.on_site.filter(publish=True, date_publish__lte=datetime.now())
         
 from django.template.loader import get_template, select_template
 # Somehow, generic relations do not seem to work here

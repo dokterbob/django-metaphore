@@ -6,8 +6,8 @@ from django.utils.translation import ugettext as _
 import django.newforms as forms
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date_create','date_modify','publish', 'date_publish')
-    list_filter = ('publish', 'date_modify','date_publish')
+    list_display = ('title', 'date_create','date_modify', 'publish', 'date_publish')
+    list_filter = ('publish', 'date_modify','date_publish', 'site')
     ordering = ('title',)
     #filter_vertical = ('links',)
     
@@ -20,7 +20,7 @@ class PostAdmin(admin.ModelAdmin):
         if request.user.has_perm('change_author'):
             post_fields.append('author')
             
-        post_fields += ['description', 'date_publish', 'publish']
+        post_fields += ['description', 'site', 'date_publish', 'publish']
             
         fieldsets = [ (_('Post'), {'fields': post_fields }), ]
         

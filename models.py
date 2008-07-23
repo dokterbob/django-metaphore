@@ -18,7 +18,9 @@ from django.contrib.auth.models import User
 from datetime import datetime
 
 def get_default_sites():
+    print 'setting default sites'
     try:
+        print Site.objects.get_current()
         return [Site.objects.get_current()]
     except Exception:
         return []
@@ -39,7 +41,7 @@ class Post(models.Model):
 
     author = models.ForeignKey(User)
     
-    site = models.ManyToManyField(Site, verbose_name=_('sites'), default=get_default_sites())
+    site = models.ManyToManyField(Site, verbose_name=_('sites'), default=[1,])
 
     # Overhere, a relationship to self is rather senseless - we ought to prevent it
     # Also, for some reason, changes do not get saved (anymore)
@@ -73,7 +75,7 @@ class Post(models.Model):
     # We should create a custom manager for this. TBD
     @classmethod
     def published(self):
-        Post.on_site.filter(publish=True, date_publish__lte=datetime.now())
+        return Post.on_site.filter(publish=True, date_publish__lte=datetime.now())
         
 from django.template.loader import get_template, select_template
 # Somehow, generic relations do not seem to work here
@@ -124,7 +126,3 @@ class Download(Post, BasePost):
     
     filename = models.FileField(verbose_name=_('filename'), upload_to='downloads')    
 
-from admin import *
-from django.contrib import admin
-admin.site.register(Article, PostAdmin)
-admin.site.register(Download, PostAdmin)

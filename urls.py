@@ -9,7 +9,7 @@ list_dict = { 'paginate_by' : 4,
             }
 
 urlpatterns = patterns('',
-    (r'^$', object_list, list_dict.update({'page' : 1}))
-    (r'^page(?P<page>[0-9]+)/$', object_list, list_dict)
+    (r'^$', object_list, list_dict)
 )
-
+# (r'^$', object_list, {'page' : 1})
+#  (r'^page(?P<page>[0-9]+)/$', object_list, list_dict)

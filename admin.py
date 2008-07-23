@@ -3,7 +3,7 @@ from models import *
 
 from django.utils.translation import ugettext as _
 
-import django.newforms as forms
+from django import newforms as forms
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'date_create','date_modify', 'publish', 'date_publish')
@@ -20,7 +20,7 @@ class PostAdmin(admin.ModelAdmin):
         if request.user.has_perm('change_author'):
             post_fields.append('author')
             
-        post_fields += ['description', 'site', 'date_publish', 'publish']
+        post_fields += ['description', 'date_publish', 'publish', 'site']
             
         fieldsets = [ (_('Post'), {'fields': post_fields }), ]
         
@@ -74,4 +74,6 @@ class PostAdmin(admin.ModelAdmin):
 
     #blank = ('date_publish', 'links')
     #date_hierarchy = 'date_publish'
-    
+
+admin.site.register(Article, PostAdmin)
+admin.site.register(Download, PostAdmin)

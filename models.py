@@ -17,14 +17,6 @@ from django.contrib.auth.models import User
 
 from datetime import datetime
 
-def get_default_sites():
-    print 'setting default sites'
-    try:
-        print Site.objects.get_current()
-        return [Site.objects.get_current()]
-    except Exception:
-        return []
-
 class Post(models.Model):
     class Meta:
         get_latest_by = 'date_publish'
@@ -41,21 +33,23 @@ class Post(models.Model):
 
     author = models.ForeignKey(User)
     
-    site = models.ManyToManyField(Site, verbose_name=_('sites'), default=[1,])
+    site = models.ManyToManyField(Site, verbose_name=_('sites'))
 
     # Overhere, a relationship to self is rather senseless - we ought to prevent it
     # Also, for some reason, changes do not get saved (anymore)
-    links = models.ManyToManyField('self', verbose_name=_('links'), null=True, blank=True, related_name='links')
+    links = models.ManyToManyField('self', verbose_name=_('links'), blank=True, related_name='links')
 
     date_create = models.DateTimeField(auto_now_add=True, verbose_name=_('creation date'))
     date_modify = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))
-    date_publish = models.DateTimeField(verbose_name=_('publication date'), null=True, blank=True)
+    date_publish = models.DateTimeField(verbose_name=_('publication date'), blank=True)
     
     publish = models.BooleanField(verbose_name=_('publish'), default=False)
     
     content_type = models.ForeignKey(ContentType, editable=False)
 
     def save(self):
+        # This should also work from a higher level; JavaScript should provide
+        # necessary user feedback.
         if self.publish and not self.date_publish:
             self.date_publish = datetime.now()
                     

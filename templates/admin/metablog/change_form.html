@@ -1,0 +1,21 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_field_sets %}
+<script type="text/javascript">
+    // Note: this assumes we allways use the first datetimefield
+    function setNow() {
+        if (document.getElementById("id_date_publish_0").value == "") {
+            DateTimeShortcuts.handleCalendarQuickLink(0, 0); 
+        }
+        
+        if (document.getElementById("id_date_publish_1").value == "") {
+            DateTimeShortcuts.handleClockQuicklink(0, new Date().getHourMinuteSecond());
+        }
+    }
+
+    document.getElementById("id_publish").onchange = function() { if (this.checked) { setNow(); } };
+    
+
+</script>
+{% endblock %}
+

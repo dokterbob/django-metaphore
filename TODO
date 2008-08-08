@@ -1,0 +1,87 @@
+- Change 'post' into 'publication'
+  This is a publication framework, not just a blog thingy.
+  
+- Better comments than django.contrib.comments
+  Users should be blockable by IP, hostname and rate.
+  Basic code for this is ready.
+  
+- Integration of CAPTCHA in all anonymous and some non-
+  anonymous user input.
+  Basis for this is ready as well but needs updates.
+  
+- Linkback support. We want to see who links to us.
+
+- OpenID and/or Google auth support. It will be standard. 
+  This is what users want, eventually.
+
+Indexing
+========
+Content should be accessible by the following mechanisms:
+- Tagging
+  Posts should be easily taggable, both from admin as well
+  as from the frontside. Use AJAX.
+  
+- Categories
+  A post should be categorizeable: ManyToMany.
+  
+- Date
+  Ordering by date.
+  
+- Permalink
+  A permalink using the ID of the post object should also be
+  available.
+  
+- Linking
+  All types of posts can be connected through links or 
+  relations. Right now there is a weird BUG that doesn't
+  allow links to be saved.
+  
+Content types
+=============
+- LaTeX
+  PDF, HTML and text views should be available.
+  
+- HTML
+  Including Javascript WYSIWYG HTML editor.
+  
+- Downloads
+  Including file size info and possibly integrated
+  Django S3 support.
+
+- YouTube movies
+  Using Google API.
+  
+- Flickr/Picasaweb photo's and/or gallery's
+  Using respective API's.
+  
+- MP4 movies
+  Including transcoding to Flash and automatic web player.
+  
+- MP3/AAC music
+  Also including automatic player.
+
+- Native gallery's based on some existing Django app?
+
+Any other requests?
+
+Pluggables 
+==========
+- django-threadedcomments: threaded comments
+- django-representations: different representations for (different kinds of) posts (?)
+- django-tube: YouTube integration
+- django-audioplayer: Flahs MP3 player integration
+- django-pagination: Advanced pagination (?)
+- django-notification: User notification of new posts
+- django-picasa: Picasa integration
+- django-profile: User account and profile management
+- django-object-view-tracking: Track object views
+- django-ratings: Add ratings to publications (?)
+- django-tagging: Generic tagging
+  http://code.google.com/p/django-tagging/
+
+Requested pluggables
+====================
+- Generic tagging
+- Generic categories
+- Captcha
+- Geolocation

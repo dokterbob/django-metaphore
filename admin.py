@@ -3,7 +3,7 @@ from models import *
 
 from django.utils.translation import ugettext as _
 
-from django import newforms as forms
+from django import forms
 
 def get_default_sites():
     try:
@@ -16,7 +16,8 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ('publish', 'date_modify','date_publish', 'site')
     ordering = ('title',)
     
-    # THis is not working!?
+    prepopulated_fields = {'slug':('title',)}
+ 
     #filter_horizontal = ('links',)
     
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -28,13 +29,13 @@ class PostAdmin(admin.ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets_orig = super(PostAdmin, self).get_fieldsets(request, obj)
         
-        post_fields = ['title',]
+        post_fields = ['title','slug']
         
         # Only superusers can change authors, for now
         if request.user.has_perm('change_author'):
             post_fields.append('author')
             
-        post_fields += ['description', 'date_publish', 'publish', 'site']
+        post_fields += ['description', 'site', 'publish', 'date_publish']
             
         fieldsets = [ (_('Post'), {'fields': post_fields }), ]
         

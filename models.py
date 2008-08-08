@@ -27,21 +27,23 @@ class Post(models.Model):
         
     objects = models.Manager()
     on_site = CurrentSiteManager()
-        
+    
     title = models.CharField(max_length=255, verbose_name=_('title'))
+    slug = models.SlugField(max_length=50, verbose_name=_('slug'))
+
     description = models.TextField(verbose_name=_('description'))
 
     author = models.ForeignKey(User)
     
-    site = models.ManyToManyField(Site, verbose_name=_('sites'))
+    site = models.ManyToManyField(Site, verbose_name=_('sites'), null=True, blank=True)
 
     # Overhere, a relationship to self is rather senseless - we ought to prevent it
     # Also, for some reason, changes do not get saved (anymore)
-    links = models.ManyToManyField('self', verbose_name=_('links'), blank=True, related_name='links')
+    links = models.ManyToManyField('self', verbose_name=_('links'), related_name='links', null=True, blank=True)
 
     date_create = models.DateTimeField(auto_now_add=True, verbose_name=_('creation date'))
     date_modify = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))
-    date_publish = models.DateTimeField(verbose_name=_('publication date'), blank=True)
+    date_publish = models.DateTimeField(verbose_name=_('publication date'), null=True, blank=True)
     
     publish = models.BooleanField(verbose_name=_('publish'), default=False)
     

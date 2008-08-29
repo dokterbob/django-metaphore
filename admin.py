@@ -75,30 +75,32 @@ class PostAdmin(admin.ModelAdmin):
    
     # A little hack found in http://django.freelancernepal.com/topics/django-newforms-admin/
     def add_view(self, request, *args, **kwargs):
-          if request.method == "POST":
-              # If we DO NOT have change permissions, make sure we override the author to the current user
-              if not request.user.has_perm('change_author'):
-                  postdict = request.POST.copy()
-                  postdict['author'] = request.user.id
-                  request.POST = postdict
+        if request.method == "POST":
+            # If we DO NOT have change permissions, make sure we override the author to the current user
+            if not request.user.has_perm('change_author'):
+                postdict = request.POST.copy()
+                postdict['author'] = request.user.id
+                request.POST = postdict
+      
+        elif not request.GET.has_key('author'):
+            # We are handling a GET, we default to current user
+            getdict = request.GET.copy()
+            getdict['author'] = request.user.id
+            request.GET = getdict
                   
-          elif not request.GET.has_key('author'):
-              # We are handling a GET, we default to current user
-              getdict = request.GET.copy()
-              getdict['author'] = request.user.id
-              request.GET = getdict
-                              
-          return super(PostAdmin, self).add_view(request, *args, **kwargs)
+        return super(PostAdmin, self).add_view(request, *args, **kwargs)
      
-          def change_view(self, request, *args, **kwargs):
-              if request.method == "POST":
-                  # If we DO NOT have change permissions, make sure we override the author to the current user
-                  if not request.user.has_perm('change_author'):
-                      postdict = request.POST.copy()
-                      postdict['author'] = request.user.id
-                      request.POST = postdict
-                      
-              return super(PostAdmin, self).change_view(request, *args, **kwargs)
+    def change_view(self, request, *args, **kwargs):
+        if request.method == "POST":
+            print 'DEBUG'
+            print request.POST
+            # If we DO NOT have change permissions, make sure we override the author to the current user
+            if not request.user.has_perm('change_author'):
+                postdict = request.POST.copy()
+                postdict['author'] = request.user.id
+                request.POST = postdict
+
+        return super(PostAdmin, self).change_view(request, *args, **kwargs)
 
     #blank = ('date_publish', 'links')
     #date_hierarchy = 'date_publish'

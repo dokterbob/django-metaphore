@@ -17,6 +17,10 @@ from django.contrib.auth.models import User
 
 from datetime import datetime
 
+class PublicationManager(CurrentSiteManager):
+    def get_query_set(self):
+        return super(CurrentSiteManager, self).get_query_set().filter(publish=True, date_publish__lte=datetime.now())
+
 class Post(models.Model):
     class Meta:
         get_latest_by = 'date_publish'
@@ -27,9 +31,10 @@ class Post(models.Model):
         
     objects = models.Manager()
     on_site = CurrentSiteManager()
+    published = PublicationManager()
     
     title = models.CharField(max_length=255, verbose_name=_('title'))
-    slug = models.SlugField(max_length=50, verbose_name=_('slug'))
+    slug = models.SlugField(max_length=50, verbose_name=_('slug'), db_index=True)
 
     description = models.TextField(verbose_name=_('description'))
 
@@ -39,7 +44,8 @@ class Post(models.Model):
 
     # Overhere, a relationship to self is rather senseless - we ought to prevent it
     # Also, for some reason, changes do not get saved (anymore)
-    links = models.ManyToManyField('self', verbose_name=_('links'), related_name='links', null=True, blank=True)
+    # This is now officially a Django bug: ticket 8161
+    links = models.ManyToManyField('self', verbose_name=_('links'), related_name='links', null=True, blank=True, symmetrical=True)
 
     date_create = models.DateTimeField(auto_now_add=True, verbose_name=_('creation date'))
     date_modify = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))
@@ -48,32 +54,13 @@ class Post(models.Model):
     publish = models.BooleanField(verbose_name=_('publish'), default=False)
     
     content_type = models.ForeignKey(ContentType, editable=False)
-
-    def save(self):
-        # This should also work from a higher level; JavaScript should provide
-        # necessary user feedback.
-        if self.publish and not self.date_publish:
-            self.date_publish = datetime.now()
-                    
-        super(Post, self).save()
     
     def content(self):
         return self.content_type.model_class().objects.get(post=self)
-
-    # This does not belong in here according to DRY
-    # But this way is definitly the easiest
-    def render(self, format='html'):
-        self.content().render(format)
                 
     def __unicode__(self):
         return u"%s %s" % (capfirst(self.content_type.model_class()._meta.verbose_name), self.title)  
     
-    # We should create a custom manager for this. TBD
-    @classmethod
-    def published(self):
-        return Post.on_site.filter(publish=True, date_publish__lte=datetime.now())
-        
-from django.template.loader import get_template, select_template
 # Somehow, generic relations do not seem to work here
 # Workaround needed to link back to Post as we do in this BaseClass's subclasses
 class BasePost(models.Model):

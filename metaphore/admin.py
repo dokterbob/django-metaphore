@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.sites.models import Site
 
 from django.utils.translation import ugettext as _
 
@@ -9,7 +10,7 @@ from models.base import Post
 
 def get_default_sites():
     try:
-        return [Site.objects.get_current()]
+        return 
     except Exception:
         return []
 
@@ -28,7 +29,7 @@ class PostAdmin(admin.ModelAdmin):
     # This is a dirty hack, this belongs inside of the model
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == "site": # Check if it's the one you want
-            kwargs.update({'initial': get_default_sites()})
+            kwargs.update({'initial': [Site.objects.get_current()]})
             
         return super(PostAdmin, self).formfield_for_dbfield(db_field, **kwargs) # Get the default field
             

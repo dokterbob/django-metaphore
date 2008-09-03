@@ -11,8 +11,9 @@
   
 - Linkback support. We want to see who links to us.
 
-- OpenID and/or Google auth support. It will be standard. 
-  This is what users want, eventually.
+- OpenID and/or Google auth support. It
+  will be standard. This is what users
+  want, eventually.
 
 Indexing
 ========

@@ -1,0 +1,4 @@
+{% extends "representations/metaphore.post/detail.html" %}
+
+{% block content %}{{ object.description|escape|linebreaks|urlizetrunc:15 }}
+<p><a href="{{ object.content.download.url }}">Download</a>{% endblock %}

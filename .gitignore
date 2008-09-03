@@ -3,3 +3,5 @@
 .DS\_Store
 *.sqlite
 *.sw?
+demo/media
+

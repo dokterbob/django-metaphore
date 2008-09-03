@@ -5,6 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from base import BasePost
 
+# Due to Ticket #4470 (to be fixed soon), the content types are limited
+# to this file only.
+
 class Article(BasePost):
     class Meta:
         verbose_name = _('article')

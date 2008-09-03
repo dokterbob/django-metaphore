@@ -78,5 +78,4 @@ class BasePost(Post):
     post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
 
 from utils import _register_type
-
 models.signals.class_prepared.connect(_register_type)

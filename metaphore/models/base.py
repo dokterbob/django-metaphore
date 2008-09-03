@@ -75,19 +75,6 @@ def _pre_save(sender, instance, **kwargs):
     if Post in instance._meta.parents:
         instance.content_type = ContentType.objects.get_for_model(instance.__class__)
 
-# Later, we don't want one mega-hook but one that just listens to each sender 
+# Later, we don't want one mega-hook but one that just listens to each sender
 models.signals.pre_save.connect(_pre_save)
-        
-class Article(BasePost):
-    class Meta:
-        verbose_name = _('article')
-        verbose_name_plural = _('articles')
 
-    text = models.TextField(verbose_name=_('text'))
-
-class Download(BasePost):
-    class Meta:
-        verbose_name = _('download')
-        verbose_name_plural = _('downloads')
-
-    filename = models.FileField(verbose_name=_('filename'), upload_to='downloads')    

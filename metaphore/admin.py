@@ -19,9 +19,11 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ('title',)
     
     prepopulated_fields = {'slug':('title',)}
- 
-    filter_horizontal = ('links',)
+     
+    if 'links' in modelform_factory(Post).base_fields.keys():
+        filter_horizontal = ('links',)
     
+    # This is a dirty hack, this belongs inside of the model
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == "site": # Check if it's the one you want
             kwargs.update({'initial': get_default_sites()})
@@ -29,26 +31,36 @@ class PostAdmin(admin.ModelAdmin):
         return super(PostAdmin, self).formfield_for_dbfield(db_field, **kwargs) # Get the default field
             
     def get_fieldsets(self, request, obj=None):
-        post_form = modelform_factory(Post)
-        post_fields = post_form.base_fields.keys()
+        # Get all the fields for post
+        post_fields = modelform_factory(Post).base_fields.keys()
         
+        # Get all fields for the currend model
         fieldsets_orig = super(PostAdmin, self).get_fieldsets(request, obj)
-        
         fields_orig = fieldsets_orig[0][1]['fields']
         
-        if not request.user.has_perm('change_author'):
-            post_fields.remove('author')
-            fields_orig.remove('author')
-            
+        # First, remove all fields that belong to Post from the default list of fields
         for field in post_fields:
             if field in fields_orig:
                 fields_orig.remove(field)
         
-        post_fields.remove('links')
+        # If we're not allowed to change the author, remove that one from the post fields       
+        if  'author' in post_fields and not request.user.has_perm('change_author'):
+            post_fields.remove('author')
         
-        fieldsets = [ (_('Post'), {'fields': post_fields }), 
-                      (_('Related posts'), {'fields': ['links',]}) ]
+        # Links belongs in it's own fieldset        
+        if 'links' in post_fields:
+            post_fields.remove('links')
+            related_set = (_('Related posts'), {'fields': ['links',]}) 
+        else:
+            related_set = None
         
+        # Put all post-fields in a separate formset
+        fieldsets = [ (_('Post'), {'fields': post_fields }), ]
+        
+        # Add a formset for related objects, if the field's available
+        fieldsets.append(related_set)
+        
+        # Appent the content fields in their own fieldset
         fieldsets.append( (_('Content'),  {'fields': fields_orig }) )
         
         return fieldsets
@@ -102,5 +114,5 @@ class PostAdmin(admin.ModelAdmin):
     #blank = ('date_publish', 'links')
     #date_hierarchy = 'date_publish'
 
-admin.site.register(Article, PostAdmin)
-admin.site.register(Download, PostAdmin)
+admin.site.register(Article)
+#admin.site.register(Download, PostAdmin)

@@ -60,43 +60,34 @@ class Post(models.Model):
                 
     def __unicode__(self):
         return u"%s %s" % (capfirst(self.content_type.model_class()._meta.verbose_name), self.title)  
-    
-# Somehow, generic relations do not seem to work here
-# Workaround needed to link back to Post as we do in this BaseClass's subclasses
+
 class BasePost(models.Model):
     class Meta:
         abstract = True
         
     def __unicode__(self):
         return self.title
+
+def _pre_save(sender, instance, **kwargs):
+    if Post in instance._meta.parents:
+        instance.content_type = ContentType.objects.get_for_model(instance.__class__)
         
-class Article(Post, BasePost):
-    # This part is generic and should be automated    
-    post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
-
-    def save(self):
-        self.content_type = ContentType.objects.get_for_model(Article)
-        super(Article, self).save()        
-    # End of generic part
-
+models.signals.pre_save.connect(_pre_save)
+        
+class Article(BasePost, Post):
     class Meta:
         verbose_name = _('article')
         verbose_name_plural = _('articles')
-    
-    text = models.TextField(verbose_name=_('text'))
 
-class Download(Post, BasePost):
-    # This part is generic and should be automated    
+
     post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
 
-    def save(self):
-        self.content_type = ContentType.objects.get_for_model(Download)
-        super(Download, self).save()
-    # End of generic part
+    text = models.TextField(verbose_name=_('text'))
 
+class Download(BasePost):
     class Meta:
         verbose_name = _('download')
         verbose_name_plural = _('downloads')
-    
+
     filename = models.FileField(verbose_name=_('filename'), upload_to='downloads')    
 

@@ -29,6 +29,9 @@ class Post(models.Model):
         verbose_name_plural = _('posts')
         permissions = (("change_author", ugettext("Change author")),)
         
+        # A workaround for Ticket #4470
+        app_label = 'metaphore'
+        
     objects = models.Manager()
     on_site = CurrentSiteManager()
     published = PublicationManager()
@@ -66,15 +69,14 @@ class BasePost(Post):
     class Meta:
         abstract = True
         
+        # A workaround for Ticket #4470
+        app_label = 'metaphore'
+        
     def __unicode__(self):
         return self.title
         
     post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
 
-def _pre_save(sender, instance, **kwargs):
-    if Post in instance._meta.parents:
-        instance.content_type = ContentType.objects.get_for_model(instance.__class__)
+from utils import _register_type
 
-# Later, we don't want one mega-hook but one that just listens to each sender
-models.signals.pre_save.connect(_pre_save)
-
+models.signals.class_prepared.connect(_register_type)

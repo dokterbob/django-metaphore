@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 from django.forms.models import modelform_factory
 
-from models import *
+from models.base import Post
 
 def get_default_sites():
     try:
@@ -112,6 +112,3 @@ class PostAdmin(admin.ModelAdmin):
                 request.POST = postdict
 
         return super(PostAdmin, self).change_view(request, *args, **kwargs)
-
-admin.site.register(Article, PostAdmin)
-admin.site.register(Download, PostAdmin)

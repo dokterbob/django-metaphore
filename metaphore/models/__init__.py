@@ -1,3 +1,5 @@
+from base import Post
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -15,4 +17,4 @@ class Download(BasePost):
         verbose_name = _('download')
         verbose_name_plural = _('downloads')
 
-    filename = models.FileField(verbose_name=_('filename'), upload_to='downloads')
+    download = models.FileField(verbose_name=_('filename'), upload_to='downloads')

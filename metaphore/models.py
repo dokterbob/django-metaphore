@@ -61,26 +61,27 @@ class Post(models.Model):
     def __unicode__(self):
         return u"%s %s" % (capfirst(self.content_type.model_class()._meta.verbose_name), self.title)  
 
-class BasePost(models.Model):
+# You might need the patch for ticket #7588 here.
+class BasePost(Post):
     class Meta:
         abstract = True
         
     def __unicode__(self):
         return self.title
+        
+    post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
 
 def _pre_save(sender, instance, **kwargs):
     if Post in instance._meta.parents:
         instance.content_type = ContentType.objects.get_for_model(instance.__class__)
-        
+
+# Later, we don't want one mega-hook but one that just listens to each sender 
 models.signals.pre_save.connect(_pre_save)
         
-class Article(BasePost, Post):
+class Article(BasePost):
     class Meta:
         verbose_name = _('article')
         verbose_name_plural = _('articles')
-
-
-    post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
 
     text = models.TextField(verbose_name=_('text'))
 
@@ -90,4 +91,3 @@ class Download(BasePost):
         verbose_name_plural = _('downloads')
 
     filename = models.FileField(verbose_name=_('filename'), upload_to='downloads')    
-

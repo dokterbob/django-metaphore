@@ -19,6 +19,8 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ('title',)
     
     prepopulated_fields = {'slug':('title',)}
+    
+    #date_hierarchy = 'date_publish'
      
     if 'links' in modelform_factory(Post).base_fields.keys():
         filter_horizontal = ('links',)
@@ -111,8 +113,5 @@ class PostAdmin(admin.ModelAdmin):
 
         return super(PostAdmin, self).change_view(request, *args, **kwargs)
 
-    #blank = ('date_publish', 'links')
-    #date_hierarchy = 'date_publish'
-
-admin.site.register(Article)
-#admin.site.register(Download, PostAdmin)
+admin.site.register(Article, PostAdmin)
+admin.site.register(Download, PostAdmin)

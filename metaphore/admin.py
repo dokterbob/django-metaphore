@@ -20,7 +20,7 @@ class PostAdmin(admin.ModelAdmin):
     
     prepopulated_fields = {'slug':('title',)}
     
-    #date_hierarchy = 'date_publish'
+    date_hierarchy = 'date_publish'
      
     if 'links' in modelform_factory(Post).base_fields.keys():
         filter_horizontal = ('links',)

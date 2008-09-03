@@ -1,9 +1,9 @@
-from base import Post
+from django.conf import settings
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from base import BasePost
+from base import Post, BasePost
 
 # Due to Ticket #4470 (to be fixed soon), the content types are limited
 # to this file only.
@@ -21,3 +21,4 @@ class Download(BasePost):
         verbose_name_plural = _('downloads')
 
     download = models.FileField(verbose_name=_('filename'), upload_to='downloads')
+

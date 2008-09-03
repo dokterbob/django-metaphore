@@ -70,15 +70,6 @@ class BasePost(models.Model):
     def __unicode__(self):
         return self.title
         
-    def render(self, format='html'):
-        template = get_template('post/render/post.%s' % format)
-    
-        context = Context({'post': self})
-        
-        print 'Rendering %s, %s' % (self, self.__class__)
-        
-        return template.render(context)
-        
 class Article(Post, BasePost):
     # This part is generic and should be automated    
     post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)

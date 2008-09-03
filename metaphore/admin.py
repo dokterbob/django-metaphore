@@ -18,7 +18,7 @@ class PostAdmin(admin.ModelAdmin):
     
     prepopulated_fields = {'slug':('title',)}
  
-    #filter_horizontal = ('links',)
+    filter_horizontal = ('links',)
     
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == "site": # Check if it's the one you want

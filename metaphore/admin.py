@@ -40,11 +40,15 @@ class PostAdmin(admin.ModelAdmin):
                              {'fields' : ('title', 'slug', 'description')})
         advanced_fieldset = (_('Advanced options'),
                              {'classes': ('collapse',),
-                              'fields' : ('author', 'publish', 'publish_date','sites')})
+                              'fields' : ('publish', 'publish_date','sites')})
         related_fieldset =  (_('Links'), 
                              {'classes': ('collapse',),
                               'fields': ('links',)})
-                
+        
+        # If we're not allowed to change the author, remove that one from the post fields       
+        if request.user.has_perm('change_author'):
+            advanced_fieldset[1]['fields'] = ('author',) + advanced_fieldset[1]['fields']
+        
         # Get all fields for the currend model
         fieldsets_orig = super(PostAdmin, self).get_fieldsets(request, obj)
         fields_orig = fieldsets_orig[0][1]['fields']

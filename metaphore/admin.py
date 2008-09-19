@@ -59,8 +59,7 @@ class PostAdmin(admin.ModelAdmin):
         content_fieldset = (_('Content'),  
                            {'fields': fields_orig })
                            
-        fieldsets = (base_fieldset, advanced_fieldset, content_fieldset )
-        print fieldsets
+        fieldsets = (base_fieldset, advanced_fieldset, related_fieldset, content_fieldset )
         return fieldsets
 
     def has_change_permission(self, request, obj=None):

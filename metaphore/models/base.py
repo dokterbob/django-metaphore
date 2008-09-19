@@ -46,7 +46,7 @@ class Post(models.Model):
 
     description = models.TextField(verbose_name=_('description'))
 
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, db_index=True)
     
     sites = models.ManyToManyField(Site, verbose_name=_('sites'), null=True, blank=True)
 

@@ -30,7 +30,7 @@ class PostAdmin(admin.ModelAdmin):
     
     # This is a dirty hack, this belongs inside of the model but defaults don't work on M2M
     def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name == 'site': # Check if it's the one you want
+        if db_field.name == 'sites': # Check if it's the one you want
             kwargs.update({'initial': [Site.objects.get_current()]})
          
         return super(PostAdmin, self).formfield_for_dbfield(db_field, **kwargs)

@@ -10,7 +10,7 @@ from models.base import Post
 
 def get_default_sites():
     try:
-        return 
+        return Site.objects.all()
     except Exception:
         return []
 
@@ -18,6 +18,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'date_create','date_modify', 'publish', 'date_publish')
     list_filter = ('publish', 'date_modify','date_publish', 'site')
     ordering = ('title',)
+    search_fields = ('title', 'slug', 'description')
     
     prepopulated_fields = {'slug':('title',)}
     
@@ -26,7 +27,7 @@ class PostAdmin(admin.ModelAdmin):
     if 'links' in modelform_factory(Post).base_fields.keys():
         filter_horizontal = ('links',)
     
-    # This is a dirty hack, this belongs inside of the model
+    # This is a dirty hack, this belongs inside of the model but defaults don't work on M2M
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == "site": # Check if it's the one you want
             kwargs.update({'initial': [Site.objects.get_current()]})

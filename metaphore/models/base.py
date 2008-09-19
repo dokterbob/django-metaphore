@@ -54,7 +54,7 @@ class Post(models.Model):
     date_modify = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))
     date_publish = models.DateTimeField(verbose_name=_('publication date'), null=True, blank=True)
     
-    publish = models.BooleanField(verbose_name=_('publish'), default=False)
+    publish = models.BooleanField(verbose_name=_('publish'), default=True)
     
     content_type = models.ForeignKey(ContentType, editable=False)
     
@@ -71,11 +71,13 @@ class BasePost(Post):
         
         # A workaround for Ticket #4470
         app_label = 'metaphore'
-        
+    
     def __unicode__(self):
         return self.title
         
     post = models.OneToOneField('Post', parent_link=True, verbose_name=_('post'), editable=False, primary_key=True, db_index=True)
 
+# This is not beautiful - but due to the limited number of Models the risk
+# is limited, AFAIK.
 from utils import _register_type
 models.signals.class_prepared.connect(_register_type)

@@ -16,12 +16,14 @@ def _pre_save(sender, instance, **kwargs):
     instance.content_type = ContentType.objects.get_for_model(instance.__class__)
 
 def _register_type(sender, **kwargs):
-    assert Post in sender._meta.parents, 'Trying to register something that\'s not a subclass of Post.'
-    if settings.DEBUG:
-        print 'Registering', sender
+    if Post in sender._meta.parents:
+        if settings.DEBUG:
+            print 'Registering', sender
     
-    # A workaround for Ticket #4470
-    sender._meta.app_label = 'metaphore'
+        # A workaround for Ticket #4470
+        sender._meta.app_label = 'metaphore'
 
-    admin.site.register(sender, PostAdmin)
-    models.signals.pre_save.connect(_pre_save, sender=sender)
+        admin.site.register(sender, PostAdmin)
+        models.signals.pre_save.connect(_pre_save, sender=sender)
+    elif settings.DEBUG:
+        print 'Not registering', sender

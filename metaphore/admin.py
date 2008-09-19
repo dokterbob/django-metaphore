@@ -33,7 +33,7 @@ class PostAdmin(admin.ModelAdmin):
         if db_field.name == 'site': # Check if it's the one you want
             kwargs.update({'initial': [Site.objects.get_current()]})
          
-        return super(PostAdmin, self).formfield_for_dbfield(db_field, **kwargs) # Get the default field
+        return super(PostAdmin, self).formfield_for_dbfield(db_field, **kwargs)
             
     def get_fieldsets(self, request, obj=None):
         base_fieldset =     (_('General'),

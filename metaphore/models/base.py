@@ -19,12 +19,16 @@ from datetime import datetime
 
 class PublicationManager(CurrentSiteManager):
     def get_query_set(self):
-        return super(CurrentSiteManager, self).get_query_set().filter(publish=True, date_publish__lte=datetime.now())
+        return super(CurrentSiteManager, self).get_query_set().filter(publish=0, publish_date__lte=datetime.now())
+
+class AssetManager(CurrentSiteManager):
+    def get_query_set(self):
+        return super(CurrentSiteManager, self).get_query_set().filter(publish=1)
 
 class Post(models.Model):
     class Meta:
-        get_latest_by = 'date_publish'
-        ordering = ['-date_publish','-date_modify','-date_create']
+        get_latest_by = 'publish_date'
+        ordering = ['-publish_date','-modify_date','-create_date']
         verbose_name = _('post')
         verbose_name_plural = _('posts')
         permissions = (("change_author", ugettext("Change author")),)
@@ -35,6 +39,7 @@ class Post(models.Model):
     objects = models.Manager()
     on_site = CurrentSiteManager()
     published = PublicationManager()
+    assets = AssetManager()
     
     title = models.CharField(max_length=255, verbose_name=_('title'))
     slug = models.SlugField(max_length=50, verbose_name=_('slug'), db_index=True)
@@ -43,18 +48,21 @@ class Post(models.Model):
 
     author = models.ForeignKey(User)
     
-    site = models.ManyToManyField(Site, verbose_name=_('sites'), null=True, blank=True)
+    sites = models.ManyToManyField(Site, verbose_name=_('sites'), null=True, blank=True)
 
     # Overhere, a relationship to self is rather senseless - we ought to prevent it
     # Also, for some reason, changes do not get saved (anymore)
     # This is now officially a Django bug: ticket 8161
     links = models.ManyToManyField('self', verbose_name=_('links'), related_name='links', null=True, blank=True, symmetrical=True)
 
-    date_create = models.DateTimeField(auto_now_add=True, verbose_name=_('creation date'))
-    date_modify = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))
-    date_publish = models.DateTimeField(verbose_name=_('publication date'), null=True, blank=True)
-    
-    publish = models.BooleanField(verbose_name=_('publish'), default=True)
+    PUBLISH_CHOICES = ((0, _('Publication')),
+                       (1, _('Asset')),
+                       (2, _('Hidden')))
+    publish  = models.SmallIntegerField(verbose_name=_('type'), choices=PUBLISH_CHOICES, default=0)
+
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name=_('creation date'))
+    modify_date = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))
+    publish_date = models.DateTimeField(verbose_name=_('publication date'), default=datetime.now(), null=True, blank=True)    
     
     content_type = models.ForeignKey(ContentType, editable=False)
     

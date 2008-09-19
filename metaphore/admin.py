@@ -15,58 +15,52 @@ def get_default_sites():
         return []
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date_create','date_modify', 'publish', 'date_publish')
-    list_filter = ('publish', 'date_modify','date_publish', 'site')
+    list_display = ('title', 'create_date','modify_date', 'publish', 'publish_date')
+    list_filter = ('publish', 'modify_date','publish_date', 'sites')
     ordering = ('title',)
     search_fields = ('title', 'slug', 'description')
+    radio_fields = {'publish': admin.HORIZONTAL}
     
     prepopulated_fields = {'slug':('title',)}
     
-    date_hierarchy = 'date_publish'
+    date_hierarchy = 'publish_date'
      
     if 'links' in modelform_factory(Post).base_fields.keys():
         filter_horizontal = ('links',)
     
     # This is a dirty hack, this belongs inside of the model but defaults don't work on M2M
     def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name == "site": # Check if it's the one you want
+        if db_field.name == 'site': # Check if it's the one you want
             kwargs.update({'initial': [Site.objects.get_current()]})
-            
+         
         return super(PostAdmin, self).formfield_for_dbfield(db_field, **kwargs) # Get the default field
             
     def get_fieldsets(self, request, obj=None):
-        # Get all the fields for post
-        post_fields = modelform_factory(Post).base_fields.keys()
-        
+        base_fieldset =     (_('General'),
+                             {'fields' : ('title', 'slug', 'description')})
+        advanced_fieldset = (_('Advanced options'),
+                             {'classes': ('collapse',),
+                              'fields' : ('author', 'publish', 'publish_date','sites')})
+        related_fieldset =  (_('Links'), 
+                             {'classes': ('collapse',),
+                              'fields': ('links',)})
+                
         # Get all fields for the currend model
         fieldsets_orig = super(PostAdmin, self).get_fieldsets(request, obj)
         fields_orig = fieldsets_orig[0][1]['fields']
         
-        # First, remove all fields that belong to Post from the default list of fields
-        for field in post_fields:
+        # Remove common fieldsets from the total of all fields
+        fields_new = base_fieldset[1]['fields'] + advanced_fieldset[1]['fields'] + related_fieldset[1]['fields']
+        
+        for field in fields_new:
             if field in fields_orig:
                 fields_orig.remove(field)
         
-        # If we're not allowed to change the author, remove that one from the post fields       
-        if  'author' in post_fields and not request.user.has_perm('change_author'):
-            post_fields.remove('author')
-        
-        # Links belongs in it's own fieldset        
-        if 'links' in post_fields:
-            post_fields.remove('links')
-            related_set = (_('Related posts'), {'fields': ['links',]}) 
-        else:
-            related_set = None
-        
-        # Put all post-fields in a separate formset
-        fieldsets = [ (_('Post'), {'fields': post_fields }), ]
-        
-        # Add a formset for related objects, if the field's available
-        fieldsets.append(related_set)
-        
-        # Appent the content fields in their own fieldset
-        fieldsets.append( (_('Content'),  {'fields': fields_orig }) )
-        
+        content_fieldset = (_('Content'),  
+                           {'fields': fields_orig })
+                           
+        fieldsets = (base_fieldset, advanced_fieldset, content_fieldset )
+        print fieldsets
         return fieldsets
 
     def has_change_permission(self, request, obj=None):

@@ -4,7 +4,7 @@ from django.db import models
 class HTMLField(models.TextField):
     def __init__(self, *args, **kwargs):
         return super(HTMLField, self).__init__(*args, **kwargs)
-    
+        
     def formfield(self, **kwargs):
         # To fit into Admin, take arguments from parent 
         if kwargs.has_key('widget'):

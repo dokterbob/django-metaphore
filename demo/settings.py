@@ -74,7 +74,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    #'sqllog.SQLLogMiddleware'
+    'djangologging.middleware.LoggingMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -83,13 +83,27 @@ TEMPLATE_DIRS = (
     #path.join(PROJECT_ROOT, 'templates')
 )
 
+# Consider ourself as internal IP's
 from socket import gethostname, gethostbyname
-
 INTERNAL_IPS = ( '127.0.0.1',
                  gethostbyname(gethostname()))
 
+# django-tinymce
 TINYMCE_JS_URL = '/static/js/tiny_mce/tiny_mce.js'
+TINYMCE_DEFAULT_CONFIG = {'theme': 'simple'}
 
+# djangologging
+LOGGING_OUTPUT_ENABLED = True
+LOGGING_LOG_SQL = False
+LOGGING_INTERCEPT_REDIRECTS = False
+
+# Log debug messages to standard output
+if DEBUG:
+    import logging
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(levelname)-8s %(message)s',
+                        datefmt='[%d/%b/%Y %H:%M:%S]')
+    
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

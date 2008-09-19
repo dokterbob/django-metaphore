@@ -102,8 +102,6 @@ class PostAdmin(admin.ModelAdmin):
      
     def change_view(self, request, *args, **kwargs):
         if request.method == "POST":
-            print 'DEBUG'
-            print request.POST
             # If we DO NOT have change permissions, make sure we override the author to the current user
             if not request.user.has_perm('change_author'):
                 postdict = request.POST.copy()

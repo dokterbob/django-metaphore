@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from base import Post, BasePost
-from tinymce.fields import HTMLField
+from fields import HTMLField
 
 # Due to Ticket #4470 (to be fixed soon), the content types are limited
 # to this file only.

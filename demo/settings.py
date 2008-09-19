@@ -3,6 +3,10 @@
 from os import path
 PROJECT_ROOT = path.dirname(__file__)
 
+# First, update the PYTHONPATH to find our dependencies
+import sys
+sys.path.append(path.join(PROJECT_ROOT,'..','deps'))
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -84,12 +88,15 @@ from socket import gethostname, gethostbyname
 INTERNAL_IPS = ( '127.0.0.1',
                  gethostbyname(gethostname()))
 
+TINYMCE_JS_URL = '/static/js/tiny_mce/tiny_mce.js'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'tinymce',
     'representations',
     'metaphore',
 )

@@ -1,3 +1,6 @@
-Metaphore requires the trunk version of
-Django (as of this writing that's 1.0
-rc1) and django-representations.
+Metaphore runs with the current trunk of Django.
+
+(Included) dependencies are:
+- django-representations
+- django-tinymce
+- django-logging

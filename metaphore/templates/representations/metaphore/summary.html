@@ -1,0 +1,9 @@
+{% load typogrify %}
+{% load hyphenation %}
+
+{% block summary %}
+<h1><a href="{{ object.get_absolute_url }}">{{ object.title|titlecase|widont }}</a></h1>
+{% if object.description %}<div class="description">{{ object.description|linebreaks|smartypants }}</div>{% endif %}
+<div class="date">{{ object.publish_date|date:"j F Y" }}</div>
+<div class="author">{% if object.author.get_full_name %}{{ object.author.get_full_name }}{% else %}{{ object.author }}{% endif %}</div>
+{% endblock %}

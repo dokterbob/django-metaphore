@@ -1,0 +1,27 @@
+{% load typogrify %}
+{% load comments %}
+
+
+{% block detail %}
+<h1>{{ object.title|titlecase|widont }}</h1>
+{% if object.description %}<div class="description">{{ object.description|linebreaks|smartypants }}</div>{% endif %}
+<div class="date">{{ object.publish_date|date:"j F Y" }}</div>
+<div class="author">{% if object.author.get_full_name %}{{ object.author.get_full_name }}{% else %}{{ object.author }}{% endif %}</div>
+{% block content %}{{ object }}{% endblock %}
+{% if object.allow_comments %}
+<h3>Comments</h3>
+<div id="comments">
+    {% get_comment_list for object as comment_list %}
+    {% get_comment_count for object as comment_count %}
+    <p>This post has {{ comment_count }} comments.</p>
+
+    {% if comment_count %}
+    <ul>
+    {{ comment_list|unordered_list }}
+    </ul>
+    {% endif %}
+    
+    {% render_comment_form for object %}
+</div>
+{% endif %}
+{% endblock %}

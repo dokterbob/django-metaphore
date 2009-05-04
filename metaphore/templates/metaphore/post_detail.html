@@ -1,9 +1,22 @@
 {% extends "metaphore/base.html" %}
 {% load representations %}
+{% load i18n %}
 
-{% block "content" %}
-<h1>post_detail</h1>
-<h2><a href="/">terug</a></h2>
-{% represent object.content as "detail.html" %}
+{% block htmltitle %}
+{% if block.super %}{{ block.super }} : {% endif %}{{ object.title }}
 {% endblock %}
 
+{% block content %}
+<div id="post">
+    <div class="detail">
+        {% represent object.content as "detail.html" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block breadcrumbs %}
+<a href="{% url metaphore-archive-index %}">{% trans "Home" %}</a> 
+&rsaquo; <a href="{% url metaphore-archive-year object.publish_date.year %}">{{ object.publish_date.year}}</a> 
+&rsaquo; <a href="{% url metaphore-archive-month object.publish_date.year object.publish_date.month %}">{{ object.publish_date|date:"M"}}</a> 
+&rsaquo; <a href="{% url metaphore-archive-day object.publish_date.year object.publish_date.month object.publish_date.day %}">{{ object.publish_date.day }}</a>
+{% endblock %}

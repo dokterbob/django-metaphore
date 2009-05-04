@@ -1,0 +1,39 @@
+.summary {
+    padding-bottom: 5ex;
+}
+.article {
+    text-align: justify;
+    padding-top: 0.5ex;
+    padding-bottom: 2ex;    
+}
+.article p {
+    text-indent: 2em;
+}
+.description {
+    color: #555555;
+}
+.description p {
+    margin: 0;
+    padding-bottom: 2ex;
+}
+.author {
+    font-style: italic;
+}
+.readmore, .readmore a {
+    font-variant: small-caps;
+    font-weight: bold;
+    color: #000000;
+    text-indent: 8em;
+}
+.readmore a:hover {
+    text-decoration: none;
+    color: #EE0000;
+}
+#right {
+    float: right;
+    clear: none;
+    width: 10em;
+}
+#post {
+    width: 30em;
+}

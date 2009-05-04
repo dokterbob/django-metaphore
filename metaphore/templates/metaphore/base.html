@@ -1,17 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% extends "base.html" %}
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-	<title>base</title>
-	
-</head>
-
-<body>
-{% block "content" %}
-    Lege pagina
+{% block htmlheader %}
+    {{ block.super }}
+    <link href="{{ MEDIA_URL }}styles/metaphore.css" rel="stylesheet" type="text/css"/>
 {% endblock %}
-</body>
-</html>

@@ -1,0 +1,9 @@
+{% extends "representations/metaphore/detail.html" %}
+{% load hyphenation %}
+{% load typogrify %}
+
+{% block content %}
+<div class="article">
+    {{ object.content.text|hyphenate:"nl-nl,6"|smartypants|linebreaks }}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "metaphore/base.html" %}
+{% load representations %}
+{% load i18n %}
+
+{% block content %}
+<div id="right">
+    <h3>{% trans "Archive" %} {% if year %}({{ year }}){% endif %}</h3>
+    <ul>
+        {% for mydate in date_list %}
+            <li><a href="{% url metaphore-archive-month mydate.year mydate.month %}">{{ mydate|date:"F"|title}}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+<div id="post">
+    {% for object in object_list %}
+    <div class="summary-wrapper">
+        <div class="summary">
+            {% represent object.content as "summary.html" %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "representations/metaphore/summary.html" %}
+{% load hyphenation %}
+{% load typogrify %}
+{% load i18n %}
+{% load comments %}
+
+{% block summary %}
+{{ block.super }}
+<div class="article">
+    {{ object.content.text|truncatewords_html:"30"|hyphenate:"nl-nl,6"|smartypants|linebreaks }}
+</div>
+{% get_comment_count for object as comment_count %}
+<div class="readmore"><a href="{{ object.get_absolute_url }}#comments">{{ comment_count }} comment{{ comment_count|pluralize }}</a>, <a href="{{ object.get_absolute_url }}">{% trans "read more" %}</a></div>
+{% endblock %}

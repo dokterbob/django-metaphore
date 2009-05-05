@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from django.contrib.syndication.feeds import Feed
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from models import Post
+from basemodels import Post
 
 class PostFeed(Feed):
     title = _('Post feed')
@@ -18,5 +20,5 @@ class PostFeed(Feed):
         return item.author_name()
     
     def item_pubdate(self, item):
-        return item.publish_date
+        return datetime.combine(item.publish_date, item.publish_time)
 

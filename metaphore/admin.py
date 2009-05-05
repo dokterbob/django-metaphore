@@ -26,7 +26,7 @@ class PostAdmin(admin.ModelAdmin):
                              {'fields' : ('title', 'slug', 'description')})
         advanced_fieldset = (_('Advanced options'),
                              {'classes': ('collapse',),
-                              'fields' : ('publish', 'publish_date','sites','allow_comments')})
+                              'fields' : ('publish', 'publish_date','publish_time', 'sites','allow_comments')})
         #related_fieldset =  (_('Links'), 
         #                     {'classes': ('collapse',),
         #                      'fields': ('links',)})#

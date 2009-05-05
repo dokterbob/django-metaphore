@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, time
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -22,6 +22,13 @@ class DateAbstractBase(models.Model):
     create_date = models.DateTimeField(auto_now_add=True, verbose_name=_('creation date'))
     modify_date = models.DateTimeField(auto_now=True, verbose_name=_('modification date'))    
 
+def default_publish_date():
+    return datetime.now().date()
+
+def default_publish_time():
+    now = datetime.now()
+    return time(hour=now.hour, minute=now.minute, second=now.second)
+
 class PublicationAbstractBase(DateAbstractBase):
     """ Abstract base class with publish option, creation, modification and publication date. """
 
@@ -33,8 +40,9 @@ class PublicationAbstractBase(DateAbstractBase):
     published = PublicationManager()
     objects = models.Manager()
     
-    publish_date = models.DateTimeField(verbose_name=_('publication date'), default=datetime.now(), null=True, blank=True, db_index=True)
-    publish = models.BooleanField(verbose_name=_('publish'), default=True, db_index=True)
+    publish_date = models.DateField(verbose_name=_('publication date'), default=default_publish_date, null=True, blank=True, db_index=True)
+    publish_time = models.TimeField(verbose_name=_('publication time'), default=default_publish_time, null=True, blank=True, db_index=True)
+    publish = models.BooleanField(verbose_name=_('published'), default=True, db_index=True)
 
 def get_default_sites():
     return [site.id for site in Site.objects.all()]

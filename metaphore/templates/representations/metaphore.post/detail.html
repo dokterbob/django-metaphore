@@ -1,3 +1,0 @@
-<h1>{% block title %}{{ object.title|capfirst }}{% endblock %}</h1>
-<small>{% block info %}Published by <b>{{ object.author }}</b> on {{ object.date_publish }}{% endblock %}</small>
-{% block content %}{{ object.content|escape|linebreaks|urlizetrunc:15 }}{% endblock %}

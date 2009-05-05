@@ -3,5 +3,7 @@
 .DS\_Store
 *.sqlite
 *.sw?
-demo/media
-
+static/downloads
+portnumber
+initial_data.json
+settings_local.py

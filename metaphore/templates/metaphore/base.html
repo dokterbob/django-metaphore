@@ -3,4 +3,5 @@
 {% block htmlheader %}
     {{ block.super }}
     <link href="{{ MEDIA_URL }}styles/metaphore.css" rel="stylesheet" type="text/css"/>
+    <link href="{% url django.contrib.syndication.views.feed 'posts' %}" rel="alternate" type="application/rss+xml" title="Feed" >
 {% endblock %}

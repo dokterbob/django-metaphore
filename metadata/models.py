@@ -62,6 +62,9 @@ class AuthorAbstractBase(models.Model):
         abstract = True
         permissions = (("change_author", ugettext("Change author")),)
     
+    def author_name(self):
+        return self.author.get_full_name() or self.author
+    
     author = models.ForeignKey(User, verbose_name=_('author'))
 
 class DescriptionAbstractBase(models.Model):

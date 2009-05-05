@@ -4,6 +4,7 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 
 from models import Post
+
 base_dict = {
     'queryset': Post.published_on_site.all(),
     'date_field': 'publish_date',

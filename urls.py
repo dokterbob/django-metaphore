@@ -10,6 +10,15 @@ if settings.DEBUG:
 else:
     urlpatterns = patterns('')
 
+from metaphore.feeds import PostFeed
+feed_dict = {
+    'posts' : PostFeed,
+}
+
+urlpatterns += patterns('',
+    url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':feed_dict}, name='feeds'),
+)
+
 urlpatterns += patterns('',
     # Django Admin
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),

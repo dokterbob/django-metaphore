@@ -45,3 +45,5 @@ class PostAbstractBase(Post):
 class Article(PostAbstractBase):
     text = models.TextField()
 
+class Download(PostAbstractBase):
+    download = models.FileField(upload_to='downloads')

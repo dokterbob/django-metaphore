@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from django import forms
 from django.forms.models import modelform_factory
 
-from models import Article
+from models import *
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'create_date','modify_date', 'publish', 'publish_date')
@@ -104,3 +104,8 @@ class ArticleAdmin(PostAdmin):
     pass
 
 admin.site.register(Article, ArticleAdmin)
+
+class DownloadAdmin(PostAdmin):
+    pass
+
+admin.site.register(Download, DownloadAdmin)

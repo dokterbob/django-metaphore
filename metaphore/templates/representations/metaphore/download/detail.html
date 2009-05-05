@@ -1,0 +1,8 @@
+{% extends "representations/metaphore/detail.html" %}
+{% load filepath %}
+
+{% block content %}
+<div class="download">
+    Download <a href="{{ object.content.download.url }}">{{ object.content.download.name|basename }}</a>. ({{ object.content.download.size|filesizeformat}})
+</div>
+{% endblock %}

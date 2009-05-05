@@ -21,12 +21,6 @@ class PostAdmin(admin.ModelAdmin):
     
     date_hierarchy = 'publish_date'
     
-    # def formfield_for_dbfield(self, db_field, **kwargs):
-    #     if db_field.name == 'sites': # Check if it's the one you want
-    #         kwargs.update({'initial': [Site.objects.get_current()]})
-    #      
-    #     return super(PostAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-
     def get_fieldsets(self, request, obj=None):
         base_fieldset =     (_('General'),
                              {'fields' : ('title', 'slug', 'description')})

@@ -21,8 +21,7 @@ class Post(MetaDataAbstractBase):
                        'month' : self.publish_date.month,
                        'day'   : self.publish_date.day,
                        'slug'  : self.slug }
-        #from metaphore.urls import info_dict
-        #param_dict.update(info_dict)
+
         return ('metaphore-object-detail', (), param_dict)
 
     def content(self):

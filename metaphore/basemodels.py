@@ -33,8 +33,11 @@ class Post(MetaDataAbstractBase):
         return ('metaphore-object-detail', (), param_dict)
 
     def content(self):
-        # We should cache this in the Post instance to avoid extra queries
-        return self.content_type.model_class().objects.get(post=self)
+        if hasattr(self, '_content'):
+            return self._content
+        else:
+            self._content = self.content_type.model_class().objects.get(post=self)
+            return self.content()
     
     def save(self, *args, **kwargs):
         super(Post, self).save(*args, **kwargs)

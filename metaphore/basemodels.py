@@ -27,6 +27,7 @@ class Post(MetaDataAbstractBase):
         return ('metaphore-object-detail', (), param_dict)
 
     def content(self):
+        # We should cache this in the Post instance to avoid extra queries
         return self.content_type.model_class().objects.get(post=self)
 
 def _pre_save(sender, instance, **kwargs):

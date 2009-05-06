@@ -15,7 +15,13 @@ feed_dict = {
     'posts' : PostFeed,
 }
 
+from metaphore.sitemaps import PostSitemap
+sitemaps = {
+    'posts' : PostSitemap,
+}
+
 urlpatterns += patterns('',
+    url(r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}, name='sitemaps'),
     url(r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict':feed_dict}, name='feeds'),
 )
 

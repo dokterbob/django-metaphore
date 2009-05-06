@@ -116,6 +116,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.comments',
+    'django.contrib.sitemaps',
     'django_extensions',
     'debug_toolbar',
     'representations',

@@ -1,3 +1,7 @@
+import logging
+
+from django.conf import settings
+
 from django.db import models
 
 from django.utils.translation import ugettext_lazy as _
@@ -5,6 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import pre_save, class_prepared
 
 from django.contrib.contenttypes.models import ContentType
+
+from django.contrib.sitemaps import ping_google
 
 from metadata.models import MetaDataAbstractBase
 
@@ -29,6 +35,19 @@ class Post(MetaDataAbstractBase):
     def content(self):
         # We should cache this in the Post instance to avoid extra queries
         return self.content_type.model_class().objects.get(post=self)
+    
+    def save(self, *args, **kwargs):
+        super(Post, self).save(*args, **kwargs)
+        if not settings.DEBUG:
+            try:
+                ping_google()
+            except Exception:
+                # Bare 'except' because we could get a variety
+                # of HTTP-related exceptions.
+                logging.warning('Error pinging Goole while saving %s.' % self)
+        else:
+            logging.debug('Not pinging Google while saving %s because DEBUG=True.' % self)
+        
 
 def _pre_save(sender, instance, **kwargs):
     ct = ContentType.objects.get_for_model(sender)

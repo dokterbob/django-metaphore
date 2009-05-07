@@ -4,6 +4,6 @@
 
 {% block content %}
 <div class="article">
-    {{ object.content.text|hyphenate:"nl-nl,6"|smartypants|linebreaks }}
+    {{ object.content.text|hyphenate:"nl-nl,6"|widont|linebreaks }}
 </div>
 {% endblock %}

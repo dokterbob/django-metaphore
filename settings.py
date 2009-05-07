@@ -121,6 +121,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'representations',
     'typogrify',
+    'oembed',
     'metadata',
     'metaphore',
 )

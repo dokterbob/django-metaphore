@@ -1,0 +1,8 @@
+{% extends "representations/metaphore/detail.html" %}
+{% load oembed_tags %}
+
+{% block content %}
+<div class="link">
+    {{ object.content.url|oembed|urlize }}
+</div>
+{% endblock %}

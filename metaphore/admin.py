@@ -12,3 +12,8 @@ class DownloadAdmin(PostAdmin):
     pass
 
 admin.site.register(Download, DownloadAdmin)
+
+class LinkAdmin(PostAdmin):
+    pass
+
+admin.site.register(Link, LinkAdmin)

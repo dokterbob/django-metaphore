@@ -6,12 +6,16 @@
     padding-top: 0.5ex;
     padding-bottom: 2ex;    
 }
+.article p {
+    text-indent: 2em;
+}
 .download {
     padding-top: 0.5ex;
     padding-bottom: 2ex;    
 }
-.article p {
-    text-indent: 2em;
+.link {
+    padding-top: 0.5ex;
+    padding-bottom: 2ex;    
 }
 .description {
     color: #555555;

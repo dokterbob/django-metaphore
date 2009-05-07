@@ -7,7 +7,7 @@
 {% if object.description %}<div class="description">{{ object.description|linebreaks|smartypants }}</div>{% endif %}
 <div class="date">{{ object.publish_date|date:"j F Y" }}</div>
 <div class="author">{% if object.author.get_full_name %}{{ object.author.get_full_name }}{% else %}{{ object.author }}{% endif %}</div>
-{% block content %}{{ object }}{% endblock %}
+{% block content %}{{ object.content }}{% endblock %}
 {% if object.allow_comments %}
 <h3>Comments</h3>
 <div id="comments">

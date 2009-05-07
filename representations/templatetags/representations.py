@@ -1,3 +1,4 @@
+import logging
 
 from django.template import loader, Node, TemplateSyntaxError
 from django import template
@@ -8,6 +9,9 @@ def get_representation_content(model, representation, context=None):
     opts = model._meta
     template_list = [ "representations/%s/%s/%s" % (opts.app_label, opts.object_name.lower(), representation), 
                       "representations/%s/%s"    % (opts.app_label, representation), ]
+                      
+    logging.debug("Representing the %s '%s' as %s." % (opts.object_name.lower(), model, representation))
+    
     t = loader.select_template(template_list)
 
     if context is None:

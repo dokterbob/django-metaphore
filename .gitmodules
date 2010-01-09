@@ -1,0 +1,15 @@
+[submodule "deps/django-debug-toolbar"]
+	path = deps/django-debug-toolbar
+	url = git://github.com/robhudson/django-debug-toolbar.git
+[submodule "deps/django-extensions"]
+	path = deps/django-extensions
+	url = git://github.com/django-extensions/django-extensions.git
+[submodule "deps/django-oembed"]
+	path = deps/django-oembed
+	url = git://github.com/ericflo/django-oembed.git
+[submodule "deps/django-metadata"]
+	path = deps/django-metadata
+	url = git://github.com/dokterbob/django-metadata.git
+[submodule "deps/django-typogrify"]
+	path = deps/django-typogrify
+	url = git://github.com/chrisdrackett/django-typogrify.git

@@ -56,6 +56,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
 
 import urllib
 import urllib2
+import logging
 import re
 import simplejson
 import xml.etree.ElementTree as etree
@@ -371,6 +372,114 @@ class OEmbedEndpoint(object):
         '''
         self._requestHeaders['User-Agent'] = user_agent
 
+class OEmbedAutoDiscovery(OEmbedEndpoint):
+    def __init__(self):
+        self._urllib = urllib2
+        self._initRequestHeaders()
+        
+    def request(self, url, **opt):
+        '''
+        Format the input url and optional parameters, and provides the final url 
+        where to get the given resource. 
+        
+        Args:
+            url: The url of an OEmbed resource.
+            **opt: Parameters passed to the url.
+            
+        Returns:
+            The complete url of the endpoint and resource.
+        
+        '''
+        params = opt
+        urlApi = self.discover(url)
+
+        if not urlApi:
+            raise OEmbedError('No OEmbed URL could be discovered for %s' % url)
+        
+        if params.has_key('format') and self._implicitFormat:
+            urlApi = self._urlApi.replace('{format}', params['format'])
+            del params['format']
+                
+        return "%s&%s" % (urlApi, urllib.urlencode(params)) 
+
+    def discover(self, url):
+        from scrape import Session
+        
+        s = Session(agent='Banana King')
+        r = s.go(url)
+        head = r.first('head', enders='/head')
+
+        try:
+            tag = head.firsttag('link', type='application/json+oembed')
+            return tag['href']
+            
+        except Exception:
+            pass
+            
+        try:
+            head.firsttag('link', type='application/xml+oembed')
+            return tag['href']
+            
+        except Exception:
+            pass
+        
+        return None
+        
+        
+        # from HTMLParser import HTMLParser
+        # 
+        # class OEmbedHTMLParser(HTMLParser):
+        #     def __init__(self, *args, **kwargs):
+        #         super(OEmbedHTMLParser, self).__init__(*args, **kwargs)
+        #         self.endpoint = None
+        #     
+        #     def handle_starttag(self, tag, attrs):
+        #         print "Encountered the beginning of a %s tag" % tag
+        # 
+        #         if tag == 'link' and attrs.has_key('type'):
+        #             if attrs['type'] == 'application/json+oembed':
+        #                 logging.debug('Found JSON endpoint.')
+        #             
+        #                 self.endpoint =  attrs['href']
+        #                 self.close()
+        #         
+        #             if attrs['type'] == 'application/xml+oembed':
+        #                 logging.debug('Found XML endpoint.')
+        #             
+        #                 self.endpoint = attrs['href']
+        #                 self.close()
+        #             
+        # 
+        #     def handle_endtag(self, tag):
+        #         print "Encountered the end of a %s tag" % tag
+        # 
+        #         if tag == 'head':
+        #             logging.debug('End of header. Closing off.')
+        #             self.close()
+        #     
+        # p = OEmbedHTMLParser()
+        # 
+        # opener = self._urllib.build_opener()
+        # opener.addheaders = self._requestHeaders.items()
+        # 
+        # response = opener.open(url)
+        # 
+        # headers = response.info()
+        # raw = response.read()
+        # 
+        # if not headers.has_key('Content-Type'):
+        #     raise OEmbedError('Missing mime-type in discovery response')
+        # 
+        # if headers['Content-Type'].find('text/html') != -1 or \
+        #    headers['Content-Type'].find('text/xml') != -1:
+        #     p.feed(raw)
+        #     
+        #     if p.endpoint:
+        #         return p.endpoint
+        #     else:
+        #         raise OEmbedError('No discovery URL found for %s' % url)
+        # 
+        # raise OEmbedError('Wrong content type returned for discovery URL %s' % url)
 
 class OEmbedUrlScheme(object):
     '''
@@ -414,6 +523,7 @@ class OEmbedUrlScheme(object):
 
     def __repr__(self):
         return "%s - %s" % (object.__repr__(self), self._url)
+                
 
 
 class OEmbedConsumer(object):
@@ -466,14 +576,18 @@ class OEmbedConsumer(object):
         for endpoint in self._endpoints:
             if endpoint.match(url):
                 return endpoint
-
+                
         return None
         
     def _request(self, url, **opt):
         endpoint = self._endpointFor(url)
 
         if endpoint is None:
-            raise OEmbedNoEndpoint('There are no endpoints available for %s'\
+            logging.debug('No endpoint found for %s, attempting auto-discovery.' % url)
+            
+            return OEmbedAutoDiscovery().get(url)
+            
+            raise OEmbedNoEndpoint('There are no endpoints available for \'%s\' and autodiscovery failed.'\
                                    % url)        
         
         return endpoint.get(url, **opt)

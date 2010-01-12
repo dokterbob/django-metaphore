@@ -613,3 +613,11 @@ class OEmbedConsumer(object):
                 
         return self._request(url, **opt)
 
+DefaultOEmbedConsumer = OEmbedConsumer()
+DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.flickr.com/services/oembed', 
+                                                 ['http://*.flickr.com/*']))
+DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://lab.viddler.com/services/oembed/', 
+                                                 ['http://*.viddler.com/*']))
+DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://qik.com/api/oembed.{format}', 
+                                                 ['http://qik.com/video/*',
+                                                  'http://qik.com/*']))

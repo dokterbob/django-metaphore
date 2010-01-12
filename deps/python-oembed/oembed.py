@@ -402,84 +402,30 @@ class OEmbedAutoDiscovery(OEmbedEndpoint):
                 
         return "%s&%s" % (urlApi, urllib.urlencode(params)) 
 
-    def discover(self, url):
+    def discover(self, url, format=None):
         from scrape import Session
         
         s = Session(agent='Banana King')
         r = s.go(url)
         head = r.first('head', enders='/head')
+        
+        if not format or (format == 'json'):
+            try:
+                tag = head.firsttag('link', type='application/json+oembed')
+                return tag['href']
+            
+            except Exception:
+                pass
 
-        try:
-            tag = head.firsttag('link', type='application/json+oembed')
-            return tag['href']
+        if not format or (format == 'xml'):
+            try:
+                head.firsttag('link', type='application/xml+oembed')
+                return tag['href']
             
-        except Exception:
-            pass
-            
-        try:
-            head.firsttag('link', type='application/xml+oembed')
-            return tag['href']
-            
-        except Exception:
-            pass
+            except Exception:
+                pass
         
         return None
-        
-        
-        # from HTMLParser import HTMLParser
-        # 
-        # class OEmbedHTMLParser(HTMLParser):
-        #     def __init__(self, *args, **kwargs):
-        #         super(OEmbedHTMLParser, self).__init__(*args, **kwargs)
-        #         self.endpoint = None
-        #     
-        #     def handle_starttag(self, tag, attrs):
-        #         print "Encountered the beginning of a %s tag" % tag
-        # 
-        #         if tag == 'link' and attrs.has_key('type'):
-        #             if attrs['type'] == 'application/json+oembed':
-        #                 logging.debug('Found JSON endpoint.')
-        #             
-        #                 self.endpoint =  attrs['href']
-        #                 self.close()
-        #         
-        #             if attrs['type'] == 'application/xml+oembed':
-        #                 logging.debug('Found XML endpoint.')
-        #             
-        #                 self.endpoint = attrs['href']
-        #                 self.close()
-        #             
-        # 
-        #     def handle_endtag(self, tag):
-        #         print "Encountered the end of a %s tag" % tag
-        # 
-        #         if tag == 'head':
-        #             logging.debug('End of header. Closing off.')
-        #             self.close()
-        #     
-        # p = OEmbedHTMLParser()
-        # 
-        # opener = self._urllib.build_opener()
-        # opener.addheaders = self._requestHeaders.items()
-        # 
-        # response = opener.open(url)
-        # 
-        # headers = response.info()
-        # raw = response.read()
-        # 
-        # if not headers.has_key('Content-Type'):
-        #     raise OEmbedError('Missing mime-type in discovery response')
-        # 
-        # if headers['Content-Type'].find('text/html') != -1 or \
-        #    headers['Content-Type'].find('text/xml') != -1:
-        #     p.feed(raw)
-        #     
-        #     if p.endpoint:
-        #         return p.endpoint
-        #     else:
-        #         raise OEmbedError('No discovery URL found for %s' % url)
-        # 
-        # raise OEmbedError('Wrong content type returned for discovery URL %s' % url)
 
 class OEmbedUrlScheme(object):
     '''
@@ -613,11 +559,28 @@ class OEmbedConsumer(object):
                 
         return self._request(url, **opt)
 
+"""
+>>> r = DefaultOEmbedConsumer.embed('http://www.flickr.com/photos/14950906@N07/3501945280/')
+>>> r['author_name']
+'gicol'
+>>> r['url']
+'http://farm4.static.flickr.com/3582/3501945280_fa47a316b1.jpg'
+"""
 DefaultOEmbedConsumer = OEmbedConsumer()
+DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.youtube.com/oembed', 
+                                                 ['http://www.youtube.com/watch*']))
 DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.flickr.com/services/oembed', 
                                                  ['http://*.flickr.com/*']))
+DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://revision3.com/api/oembed/', 
+                                                 ['http://*.revision3.com/*']))
+DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.hulu.com/api/oembed.{format}', 
+                                                 ['http://www.hulu.com/watch/*']))
+DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.vimeo.com/api/oembed.{format}', 
+                                                 ['http://www.vimeo.com/*',
+                                                  'http://www.vimeo.com/groups/*/*']))
 DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://lab.viddler.com/services/oembed/', 
                                                  ['http://*.viddler.com/*']))
+DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.scribd.com/services/oembed', 
+                                                 ['http://*.scribd.com/*']))
 DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://qik.com/api/oembed.{format}', 
-                                                 ['http://qik.com/video/*',
-                                                  'http://qik.com/*']))
+                                                 ['http://qik.com/*']))

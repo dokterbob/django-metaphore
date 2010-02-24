@@ -35,7 +35,7 @@ class OembedAbstractBase(PostAbstractBase):
             if hasattr(self, field) and getattr(self, field) == None:
                 self.field = response[field]
         
-        super(self, OembedAbstractBase).save(*args, **kwargs)
+        super(OembedAbstractBase, self).save(*args, **kwargs)
     
 class Link(OembedAbstractBase):
     pass

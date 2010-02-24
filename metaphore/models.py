@@ -1,3 +1,5 @@
+import logging
+
 from django.db import models
 
 from basemodels import Post, PostAbstractBase
@@ -29,11 +31,15 @@ class OembedAbstractBase(PostAbstractBase):
     def save(self, *args, **kwargs):
         from oembed import DefaultOEmbedConsumer        
         
-        response = DefaultOEmbedConsumer.embed(self.url)
-        
-        for field in response:
-            if hasattr(self, field) and getattr(self, field) == None:
-                self.field = response[field]
+        try:
+            response = DefaultOEmbedConsumer.embed(self.url)
+            logging.debug('Found OEmbed info for %s' % self.url)            
+            for field in response:
+                if hasattr(self, field) and not getattr(self, field):
+                    logging.debug('Setting field %s: %s' % (field, response[field]))
+                    setattr(self, field, response[field])
+        except Exception, e:
+            logging.warn('Something went with OEmbed: %s' % e)
         
         super(OembedAbstractBase, self).save(*args, **kwargs)
     

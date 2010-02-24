@@ -1,6 +1,6 @@
 from django.db import models
 
-from basemodels import PostAbstractBase
+from basemodels import Post, PostAbstractBase
 
 class Article(PostAbstractBase):
     text = models.TextField()

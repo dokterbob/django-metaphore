@@ -32,6 +32,7 @@ Simple usage:
 
 
 Copyright (c) 2008 Ariel Barmat, abarmat@gmail.com
+Copyright (c) 2010 Mathijs de Bruin, drbob@dokterbob.net
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -347,14 +348,16 @@ class OEmbedEndpoint(object):
         
         if headers['Content-Type'].find('application/xml') != -1 or \
            headers['Content-Type'].find('text/xml') != -1:
-            response = OEmbedResponse.newFromXML(raw)
+           response = OEmbedResponse.newFromXML(raw)
             
         elif headers['Content-Type'].find('application/json') != -1 or \
-             headers['Content-Type'].find('text/json') != -1:
-            response = OEmbedResponse.newFromJSON(raw)
+             headers['Content-Type'].find('text/json') != -1 or \
+             headers['Content-Type'].find('application/x-json') != -1:
+             response = OEmbedResponse.newFromJSON(raw)
         
         else:
-            raise OEmbedError('Invalid mime-type in response - %s' % headers['Content-Type'])
+            raise OEmbedError('Invalid mime-type in response - %s' % \
+                headers['Content-Type'])
         
         return response
 
@@ -573,20 +576,39 @@ class OEmbedConsumer(object):
 'http://farm4.static.flickr.com/3582/3501945280_fa47a316b1.jpg'
 """
 DefaultOEmbedConsumer = OEmbedConsumer()
-DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.youtube.com/oembed', 
-                                                 ['http://www.youtube.com/watch*']))
-DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.flickr.com/services/oembed', 
-                                                 ['http://*.flickr.com/*']))
-DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://revision3.com/api/oembed/', 
-                                                 ['http://*.revision3.com/*']))
-DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.hulu.com/api/oembed.{format}', 
-                                                 ['http://www.hulu.com/watch/*']))
-DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.vimeo.com/api/oembed.{format}', 
-                                                 ['http://www.vimeo.com/*',
-                                                  'http://www.vimeo.com/groups/*/*']))
-DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://lab.viddler.com/services/oembed/', 
-                                                 ['http://*.viddler.com/*']))
-DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://www.scribd.com/services/oembed', 
-                                                 ['http://*.scribd.com/*']))
-DefaultOEmbedConsumer.addEndpoint(OEmbedEndpoint('http://qik.com/api/oembed.{format}', 
-                                                 ['http://qik.com/*']))
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://www.youtube.com/oembed', 
+                   ['http://www.youtube.com/watch*']))
+                   
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://www.flickr.com/services/oembed', 
+                   ['http://*.flickr.com/*']))
+
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://revision3.com/api/oembed/',                                                      
+                   ['http://*.revision3.com/*']))
+
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://www.hulu.com/api/oembed.{format}', 
+                   ['http://www.hulu.com/watch/*']))
+
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://www.vimeo.com/api/oembed.{format}', 
+                   ['http://www.vimeo.com/*',                                                       
+                    'http://www.vimeo.com/groups/*/*']))
+                    
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://lab.viddler.com/services/oembed/', 
+                   ['http://*.viddler.com/*']))
+
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://www.scribd.com/services/oembed', 
+                   ['http://*.scribd.com/*']))
+                   
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://qik.com/api/oembed.{format}', 
+                   ['http://qik.com/*']))
+
+DefaultOEmbedConsumer.addEndpoint(
+    OEmbedEndpoint('http://www.dailymotion.com/api/oembed', 
+                   ['http://www.dailymotion.com/*']))

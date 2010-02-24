@@ -90,6 +90,12 @@ class OEmbedResponse(object):
     def __getitem__(self, name):
         return self._data.get(name)
     
+    def __iter__(self):
+        return self.iterkeys()
+    
+    def iterkeys(self):
+        return self._data.iterkeys()
+    
     def getData(self):
         return self._data
         

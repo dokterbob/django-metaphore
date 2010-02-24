@@ -12,7 +12,7 @@ class PostAdmin(admin.ModelAdmin):
     actions_on_top = False
     actions_on_bottom = True
     
-    prepopulated_fields = {'slug':('title',)}
+    prepopulated_fields = {'slug': ('title',)}
     
     date_hierarchy = 'publish_date'
     

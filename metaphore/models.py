@@ -16,7 +16,7 @@ class OembedAbstractBase(PostAbstractBase):
     
     # Title is already in there
     
-    url = models.URLField(verify_exists=True)
+    url = models.URLField(verify_exists=True, blank=True)
     
     thumbnail_url = models.URLField(blank=True, verify_exists=True)
     thumbnail_width = models.SmallIntegerField(blank=True, null=True)
@@ -47,7 +47,7 @@ class Link(OembedAbstractBase):
     pass
 
 class EmbeddedRich(OembedAbstractBase):
-    html = models.TextField()
+    html = models.TextField(blank=True)
     width = models.SmallIntegerField(blank=True, null=True)
     height = models.SmallIntegerField(blank=True, null=True)
 

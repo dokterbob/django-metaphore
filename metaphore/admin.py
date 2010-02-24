@@ -17,3 +17,18 @@ class LinkAdmin(PostAdmin):
     pass
 
 admin.site.register(Link, LinkAdmin)
+
+class EmbeddedVideoAdmin(PostAdmin):
+    pass
+
+admin.site.register(EmbeddedVideo, EmbeddedVideoAdmin)
+
+class EmbeddedPhotoAdmin(PostAdmin):
+    pass
+
+admin.site.register(EmbeddedPhoto, EmbeddedPhotoAdmin)
+
+class EmbeddedRichAdmin(PostAdmin):
+    pass
+
+admin.site.register(EmbeddedRich, EmbeddedRichAdmin)

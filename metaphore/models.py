@@ -52,6 +52,26 @@ class EmbeddedRich(OembedAbstractBase):
     height = models.SmallIntegerField(blank=True, null=True)
 
 class EmbeddedVideo(EmbeddedRich):        
+    """
+    >>> from datetime import datetime
+    >>> from django.contrib.auth.models import User
+    >>> a = User.objects.all()[0]
+    >>> now = datetime.now()
+    >>> v = EmbeddedVideo()
+    >>> v.slug = 'bogusslug'+str(now.date())+str(now.microsecond)
+    >>> v.publish_date = now
+    >>> v.author = a
+    >>> v.url = 'http://www.vimeo.com/9683140'
+    >>> v.save()
+    >>> v.duration
+    '891'
+    >>> v.title
+    'the earth in the air [a short film]'
+    >>> v.url
+    'http://www.vimeo.com/9683140'
+    >>> v.thumbnail_url 
+    'http://ts.vimeo.com.s3.amazonaws.com/486/494/48649497_200.jpg'
+    """
     duration = models.SmallIntegerField(blank=True, null=True)
     
 class EmbeddedPhoto(OembedAbstractBase):

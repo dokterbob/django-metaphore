@@ -13,3 +13,6 @@
 [submodule "deps/django-typogrify"]
 	path = deps/django-typogrify
 	url = git://github.com/chrisdrackett/django-typogrify.git
+[submodule "deps/python-oembed"]
+	path = deps/python-oembed
+	url = git://github.com/dokterbob/python-oembed.git

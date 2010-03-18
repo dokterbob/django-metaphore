@@ -16,6 +16,7 @@ def metaphore_archive_index(request, queryset=None, date_field='publish_date', n
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset.filter(content_type=ct)
+            extra_context.update({'content_type':content_type})
         
         return archive_index(request, queryset, date_field, num_latest,
                         template_name, template_loader,
@@ -33,6 +34,7 @@ def metaphore_archive_year(request, year, queryset=None, date_field='publish_dat
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset.filter(content_type=ct)
+            extra_context.update({'content_type':content_type})
         
         return archive_year(request, year, queryset, date_field, template_name,
                         template_loader, extra_context, allow_empty,
@@ -50,6 +52,7 @@ def metaphore_archive_month(request, year, month, queryset=None, date_field='pub
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset.filter(content_type=ct)
+            extra_context.update({'content_type':content_type})
         
         return archive_month(request, year, month, queryset, date_field,
                         month_format, template_name, template_loader,
@@ -68,6 +71,7 @@ def metaphore_archive_day(request, year, month, day, queryset=None, date_field='
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset.filter(content_type=ct)
+            extra_context.update({'content_type':content_type})
 
         return archive_day(request, year, month, day, queryset, date_field,
                         month_format, day_format, template_name,
@@ -87,6 +91,7 @@ def metaphore_object_detail(request, year, month, day, queryset=None, date_field
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset.filter(content_type=ct)
+            extra_context.update({'content_type':content_type})
         
         return object_detail(request, year, month, day, queryset, date_field,
                         month_format, day_format, object_id, slug,

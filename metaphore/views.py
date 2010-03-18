@@ -11,7 +11,6 @@ def metaphore_archive_index(request, queryset=None, date_field='publish_date', n
         mimetype=None, allow_future=False, template_object_name='object_list', content_type=None):
         
         if not queryset:
-            assert False
             queryset = Post.published_on_site.all()
 
         if content_type:

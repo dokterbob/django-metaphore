@@ -1,8 +1,6 @@
-from copy import copy
-
 from django.conf.urls.defaults import *
-from django.conf import settings
 
+from copy import copy
 from basemodels import Post
 
 base_dict = {

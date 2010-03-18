@@ -1,3 +1,5 @@
+from sorl.thumbnail.fields import ImageWithThumbnailsField
+
 import logging
 
 from django.db import models
@@ -43,3 +45,6 @@ class EmbeddedPhoto(OembedAbstractBase):
     width = models.SmallIntegerField(blank=True, null=True)
     height = models.SmallIntegerField(blank=True, null=True)
     
+
+class Photo(PostAbstractBase):
+    photo = ImageWithThumbnailsField(upload_to='images', thumbnail={'size': (128, 128)})

@@ -59,3 +59,19 @@ class EmbeddedRichAdmin(OembedAdmin):
     add_form = EmbeddedRichAddForm
 
 admin.site.register(EmbeddedRich, EmbeddedRichAdmin)
+
+class PhotoAdmin(PostAdmin):
+
+    def thumbnail(self, obj):
+        """
+        Display thumbnail-size image of ImageWithThumbnailsField in admin list view
+        """
+        thumbnail = obj.photo.thumbnail_tag
+        return '%s' % (thumbnail)
+    thumbnail.short_description = 'thumbnail'
+    thumbnail.allow_tags = True
+
+    list_display = ('title', 'create_date','modify_date', 'publish', 'publish_date', 'thumbnail')
+    
+admin.site.register(Photo, PhotoAdmin)
+    

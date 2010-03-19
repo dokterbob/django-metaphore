@@ -9,12 +9,19 @@ class PostAdmin(admin.ModelAdmin):
     ordering = ('title',)
     search_fields = ('title', 'slug', 'description')
     
-    actions_on_top = False
-    actions_on_bottom = True
+    actions_on_top = True
+    actions_on_bottom = False
+    actions = ('make_published', )
+    
     
     prepopulated_fields = {'slug': ('title',)}
     
     date_hierarchy = 'publish_date'
+    
+    def make_published(self, request, queryset):
+        queryset.update(publish=True)
+    make_published.short_description = "Mark selected posts as published"
+    
     
     def get_fieldsets(self, request, obj=None):
         base_fieldset =     (_('General'),

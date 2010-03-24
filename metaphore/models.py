@@ -6,8 +6,11 @@ from django.db import models
 
 from basemodels import Post, PostAbstractBase
 
+from images.models import Image
+
 class Article(PostAbstractBase):
     text = models.TextField()
+    images = models.ManyToManyField(Image, blank=True, null=True, verbose_name='afbeeldingen')
 
 class Download(PostAbstractBase):
     download = models.FileField(upload_to='downloads')

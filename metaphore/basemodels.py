@@ -54,6 +54,8 @@ def _pre_save(sender, instance, **kwargs):
 class PostAbstractBase(Post):
     class Meta:
         abstract = True
+        ordering = ['-publish_date', '-publish_time']
+        get_latest_by = 'publish_date'
     
     def __init__(self, *args, **kwargs):
         super(PostAbstractBase, self).__init__(*args, **kwargs)

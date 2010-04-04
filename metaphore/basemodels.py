@@ -15,6 +15,10 @@ class Post(MetaDataAbstractBase):
         verbose_name_plural = _('posts')
         
         unique_together = ('slug', 'publish_date')
+        
+        permissions = (
+            ("change_author", "Can change author"),
+        )
     
     content_type = models.ForeignKey(ContentType, editable=False)
         

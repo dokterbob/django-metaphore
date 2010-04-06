@@ -7,7 +7,9 @@ from models import *
 from forms import * 
     
 class ArticleAdmin(PostAdmin):
-    pass
+    class Media:
+        js = ('/static/tiny_mce/tiny_mce.js','/static/tiny_mce/textareas_noimage.js')
+    
 
 admin.site.register(Article, ArticleAdmin)
 

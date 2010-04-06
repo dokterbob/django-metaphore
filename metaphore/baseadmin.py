@@ -54,7 +54,10 @@ class PostAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         """ Make sure a user can only edit it's own entries. """
-
+        
+        # Default to True here until bug fixed
+        return True
+        
         if not obj:
             return True
 

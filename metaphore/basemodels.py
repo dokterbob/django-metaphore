@@ -15,6 +15,10 @@ class Post(MetaDataAbstractBase):
         verbose_name_plural = _('posts')
         
         unique_together = ('slug', 'publish_date')
+        
+        permissions = (
+            ("change_author", "Can change author"),
+        )
     
     content_type = models.ForeignKey(ContentType, editable=False)
         
@@ -54,6 +58,8 @@ def _pre_save(sender, instance, **kwargs):
 class PostAbstractBase(Post):
     class Meta:
         abstract = True
+        ordering = ['-publish_date', '-publish_time']
+        get_latest_by = 'publish_date'
     
     def __init__(self, *args, **kwargs):
         super(PostAbstractBase, self).__init__(*args, **kwargs)

@@ -1,0 +1,2 @@
+django-extensions
+Django>=1.1

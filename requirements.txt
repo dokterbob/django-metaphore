@@ -1,2 +1,6 @@
 django-extensions
 Django>=1.1
+-e git+http://github.com/chrisdrackett/django-typogrify.git#egg=django-typogrify
+-e git+http://github.com/dokterbob/python-oembed.git#egg=python-oembed
+-e git+http://github.com/dokterbob/django-representations.git#egg=django-representations
+-e git+http://github.com/dokterbob/django-metadata.git#egg=django-metadata

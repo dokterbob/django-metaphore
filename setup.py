@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup, find_packages
+from setuptools import setup, find_packages
 
 try:
     README = open('README.rst').read()
@@ -9,7 +9,7 @@ except:
     README = None
 
 try:
-    REQUIREMENTS = open('requirements.txt').read()
+    REQUIREMENTS = open('requirements.txt').lines()
 except:
     REQUIREMENTS = None
 

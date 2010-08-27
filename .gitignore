@@ -1,10 +1,9 @@
 *.o
 ._*
 *.pyc
+*.pyo
 .DS\_Store
-*.sqlite
 *.sw?
-static/downloads
-portnumber
-initial_data.json
-settings_local.py
+build
+dist
+*.egg*

@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_save, class_prepared
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sitemaps import ping_google
 
@@ -25,6 +25,8 @@ class Post(TitleAbstractBase,
         verbose_name_plural = _('posts')
 
         unique_together = ('slug', 'publish_date')
+
+        permissions = (("change_author", ugettext("Change author")), )
 
     content_type = models.ForeignKey(ContentType, editable=False)
     links = models.ManyToManyField('self', verbose_name=_('links'), \

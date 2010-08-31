@@ -2,9 +2,9 @@ import logging
 
 from django.contrib import admin
 
-from baseadmin import PostAdmin
-from models import *
-from forms import * 
+from metaphore.baseadmin import PostAdmin
+from metaphore.models import *
+from metaphore.forms import * 
     
 class ArticleAdmin(PostAdmin):
     pass
@@ -20,10 +20,12 @@ class OembedAdmin(PostAdmin):
     prepopulated_fields = {}
         
     def save_model(self, request, obj, form, change):
-        if not obj.id or not obj.author:
+        if not change:
+            # We're making a new object here and should set decent default
+            # values for author and sites
+            
             obj.author = request.user
-            obj.save()
-        
+                
         super(OembedAdmin, self).save_model(request, obj, form, change)
     
     def get_form(self, request, obj=None, **kwargs):

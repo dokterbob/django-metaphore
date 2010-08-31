@@ -40,17 +40,16 @@ class OembedAddForm(forms.ModelForm):
                         setattr(self.instance, field, response[field])
 
                         # If we set the title, also set the slug
-                        if field == 'title' and \
-                                not getattr(self.instance, 'slug'):
+                        if field == 'title' and not self.instance.slug:
                             logging.debug('Setting title with slug')
-                            title_slug = \
+                            
+                            self.instance.slug = \
                                 make_unique_slug(Post.objects.all(), \
                                                  response['title'])
 
-                            setattr(self.instance, 'slug', title_slug)
-
             except OEmbedError, e:
                 logging.warn('Something went wrong with OEmbed: %s' % e)
+
                 raise forms.ValidationError(_('Something went wrong looking \
                     up embed information for this URL: %s') % e)
 

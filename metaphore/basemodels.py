@@ -27,6 +27,9 @@ class Post(TitleAbstractBase,
         unique_together = ('slug', 'publish_date')
     
     content_type = models.ForeignKey(ContentType, editable=False)
+    links = models.ManyToManyField('self', verbose_name=_('links'), \
+                                   related_name='links', null=True, \
+                                   blank=True, symmetrical=True)
         
     @models.permalink
     def get_absolute_url(self):

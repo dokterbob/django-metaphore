@@ -22,9 +22,9 @@ class PostAdmin(admin.ModelAdmin):
         advanced_fieldset = (_('Advanced options'),
                              {'classes': ('collapse',),
                               'fields' : ('publish', 'publish_date','publish_time', 'sites','allow_comments')})
-        #related_fieldset =  (_('Links'), 
-        #                     {'classes': ('collapse',),
-        #                      'fields': ('links',)})#
+        related_fieldset =  (_('Links'), 
+                            {'classes': ('collapse',),
+                             'fields': ('links',)})
 
         # If we're not allowed to change the author, remove that one from the post fields       
         if request.user.has_perm('change_author'):
@@ -35,7 +35,7 @@ class PostAdmin(admin.ModelAdmin):
         fields_orig = fieldsets_orig[0][1]['fields']
 
         # Remove common fieldsets from the total of all fields
-        fields_new = base_fieldset[1]['fields'] + advanced_fieldset[1]['fields'] #+ related_fieldset[1]['fields']
+        fields_new = base_fieldset[1]['fields'] + advanced_fieldset[1]['fields'] + related_fieldset[1]['fields']
 
         for field in fields_new:
             if field in fields_orig:
@@ -44,7 +44,7 @@ class PostAdmin(admin.ModelAdmin):
         content_fieldset = (_('Content'),  
                            {'fields': fields_orig })
 
-        fieldsets = (base_fieldset, advanced_fieldset, content_fieldset ) #related_fieldset
+        fieldsets = (base_fieldset, advanced_fieldset, related_fieldset, content_fieldset )
         return fieldsets
 
     def has_change_permission(self, request, obj=None):

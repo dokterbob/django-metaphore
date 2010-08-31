@@ -30,15 +30,17 @@ class PostAdmin(admin.ModelAdmin):
                             {'classes': ('collapse', ),
                              'fields': ('links', )})
 
+        # Get all fields for the currend model
+        fieldsets_orig = super(PostAdmin, self).get_fieldsets(request, obj)
+        fields_orig = fieldsets_orig[0][1]['fields']
+
         # If we're not allowed to change the author,
         # remove that one from the post fields
         if request.user.has_perm('change_author'):
             advanced_fieldset[1]['fields'] = ('author', ) + \
                                              advanced_fieldset[1]['fields']
-
-        # Get all fields for the currend model
-        fieldsets_orig = super(PostAdmin, self).get_fieldsets(request, obj)
-        fields_orig = fieldsets_orig[0][1]['fields']
+        else:
+            fields_orig.remove('author')
 
         # Remove common fieldsets from the total of all fields
         fields_new = base_fieldset[1]['fields'] + \

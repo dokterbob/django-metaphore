@@ -6,6 +6,20 @@ from django.template.defaultfilters import slugify
 
 from models import *
 
+
+def make_unique_slug(queryset, value, slug_field='slug'):
+    new_slug = orig_slug = slugify(value)
+
+    # Make the slug unique
+    count = 0
+    while queryset.filter(**{slug_field: new_slug}).exists():
+        count += 1
+        logging.debug('Slug %s taken, trying next alternative' % new_slug)
+        new_slug = u'%s-%d' % (orig_slug, count)
+    
+    return new_slug
+
+
 class OembedAddForm(forms.ModelForm):
     """Form for Link"""
     
@@ -29,18 +43,12 @@ class OembedAddForm(forms.ModelForm):
                         if field == 'title' and \
                                 not getattr(self.instance, 'slug'):
                             logging.debug('Setting title with slug')
-                            orig_slug = title_slug = \
-                                slugify(response['title'])
-                        
-                            # Make the slug unique
-                            count = 0
-                            while Post.objects.filter(slug=title_slug).count():
-                                count += 1
-                                logging.debug('Slug %s taken, trying next  alternative'\
-                                                % title_slug)
-                                title_slug = u'%s-%d' % (orig_slug, count)
+                            title_slug = \
+                                make_unique_slug(Post.objects.all(), \
+                                                 response['title'])
                         
                             setattr(self.instance, 'slug', title_slug)
+
             except OEmbedError, e:
                 logging.warn('Something went wrong with OEmbed: %s' % e)
                 raise forms.ValidationError('Something went wrong looking up embed  information for this URL: %s' % e)

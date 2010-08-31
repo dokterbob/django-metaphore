@@ -23,10 +23,17 @@ class OembedAdmin(PostAdmin):
         if not change:
             # We're making a new object here and should set decent default
             # values for author and sites
+            logging.debug('New oembed object. Settings default author')
             
             obj.author = request.user
                 
         super(OembedAdmin, self).save_model(request, obj, form, change)
+        
+        if not change:
+            logging.debug('New oembed object. Settings default sites')
+
+            from django.contrib.sites.models import Site
+            obj.sites = Site.objects.all()
     
     def get_form(self, request, obj=None, **kwargs):
         if not obj:

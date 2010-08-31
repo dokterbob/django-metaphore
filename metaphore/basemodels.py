@@ -23,30 +23,32 @@ class Post(TitleAbstractBase,
     class Meta:
         verbose_name = _('post')
         verbose_name_plural = _('posts')
-        
+
         unique_together = ('slug', 'publish_date')
-    
+
     content_type = models.ForeignKey(ContentType, editable=False)
     links = models.ManyToManyField('self', verbose_name=_('links'), \
                                    related_name='links', null=True, \
                                    blank=True, symmetrical=True)
-        
+
     @models.permalink
     def get_absolute_url(self):
-        param_dict = { 'year'  : self.publish_date.year,
-                       'month' : self.publish_date.month,
-                       'day'   : self.publish_date.day,
-                       'slug'  : self.slug }
+        param_dict = {'year': self.publish_date.year,
+                      'month': self.publish_date.month,
+                      'day': self.publish_date.day,
+                      'slug': self.slug}
 
         return ('metaphore-object-detail', (), param_dict)
 
     def content(self):
+        # Do some primitive caching of the content object
         if hasattr(self, '_content'):
             return self._content
         else:
-            self._content = self.content_type.model_class().objects.get(post=self)
+            model_class = self.content_type.model_class()
+            self._content = model_class.objects.get(post=self)
             return self.content()
-    
+
     def save(self, *args, **kwargs):
         super(Post, self).save(*args, **kwargs)
         if not settings.DEBUG:
@@ -55,21 +57,28 @@ class Post(TitleAbstractBase,
             except Exception:
                 # Bare 'except' because we could get a variety
                 # of HTTP-related exceptions.
-                logging.warning('Error pinging Goole while saving %s.' % self)
+                logging.warning('Error pinging Goole while saving %s.' \
+                                    % self)
         else:
-            logging.debug('Not pinging Google while saving %s because DEBUG=True.' % self)
-        
+            logging.debug('Not pinging Google while saving %s, DEBUG=True.' \
+                            % self)
+
 
 def _pre_save(sender, instance, **kwargs):
     ct = ContentType.objects.get_for_model(sender)
-    instance.content_type = ct    
+    instance.content_type = ct
+
 
 class PostAbstractBase(Post):
+    """ Abstract base class for actual post types; the stuff that actually
+       gets posted on the website should inherit from this little critter. """
+
     class Meta:
         abstract = True
-    
+
     def __init__(self, *args, **kwargs):
         super(PostAbstractBase, self).__init__(*args, **kwargs)
         pre_save.connect(_pre_save, sender=self.__class__)
-    
-    post = models.OneToOneField('Post', parent_link=True, editable=False, primary_key=True, db_index=True)
+
+    post = models.OneToOneField('Post', parent_link=True, editable=False,
+                                primary_key=True, db_index=True)

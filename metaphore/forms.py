@@ -1,10 +1,10 @@
 from oembed import DefaultOEmbedConsumer, OEmbedError
 
 from django import forms
+from django.template.defaultfilters import slugify
+from django.utils.translation import ugettext_lazy as _
 
-from django.template.defaultfilters import slugify     
-
-from models import *
+from metaphore.models import *
 
 
 def make_unique_slug(queryset, value, slug_field='slug'):
@@ -16,29 +16,29 @@ def make_unique_slug(queryset, value, slug_field='slug'):
         count += 1
         logging.debug('Slug %s taken, trying next alternative' % new_slug)
         new_slug = u'%s-%d' % (orig_slug, count)
-    
+
     return new_slug
 
 
 class OembedAddForm(forms.ModelForm):
     """Form for Link"""
-    
+
     class Meta:
         fields = ('url', )
 
     def clean(self, *args, **kwargs):
-        if self.cleaned_data.has_key('url'):
+        if 'url' in self.cleaned_data:
             url = self.cleaned_data['url']
             try:
                 response = DefaultOEmbedConsumer.embed(url)
-                logging.debug('Found OEmbed info for %s' % url)            
+                logging.debug('Found OEmbed info for %s' % url)
                 for field in response:
                     if hasattr(self.instance, field) and \
                             not getattr(self.instance, field):
                         logging.debug('Setting field %s: %s' \
                                         % (field, response[field]))
                         setattr(self.instance, field, response[field])
-                    
+
                         # If we set the title, also set the slug
                         if field == 'title' and \
                                 not getattr(self.instance, 'slug'):
@@ -46,25 +46,31 @@ class OembedAddForm(forms.ModelForm):
                             title_slug = \
                                 make_unique_slug(Post.objects.all(), \
                                                  response['title'])
-                        
+
                             setattr(self.instance, 'slug', title_slug)
 
             except OEmbedError, e:
                 logging.warn('Something went wrong with OEmbed: %s' % e)
-                raise forms.ValidationError('Something went wrong looking up embed  information for this URL: %s' % e)
+                raise forms.ValidationError(_('Something went wrong looking \
+                    up embed information for this URL: %s') % e)
+
         return super(OembedAddForm, self).clean(*args, **kwargs)
+
 
 class EmbeddedVideoAddForm(OembedAddForm):
     class Meta(OembedAddForm.Meta):
         model = EmbeddedVideo
 
+
 class EmbeddedPhotoAddForm(OembedAddForm):
     class Meta(OembedAddForm.Meta):
         model = EmbeddedPhoto
 
+
 class EmbeddedRichAddForm(OembedAddForm):
     class Meta(OembedAddForm.Meta):
         model = EmbeddedRich
+
 
 class LinkAddForm(OembedAddForm):
     class Meta(OembedAddForm.Meta):

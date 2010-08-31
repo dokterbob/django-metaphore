@@ -7,6 +7,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sitemaps import ping_google
 
+from taggit.managers import TaggableManager
 
 from metadata.models import TitleAbstractBase, SlugAbstractBase, \
                             AuthorAbstractBase, DescriptionAbstractBase, \
@@ -29,9 +30,11 @@ class Post(TitleAbstractBase,
         permissions = (("change_author", ugettext("Change author")), )
 
     content_type = models.ForeignKey(ContentType, editable=False)
-    links = models.ManyToManyField('self', verbose_name=_('links'), \
+    links = models.ManyToManyField('self', verbose_name=_('related posts'), \
                                    related_name='links', null=True, \
                                    blank=True, symmetrical=True)
+    tags = TaggableManager()
+
 
     @models.permalink
     def get_absolute_url(self):
@@ -59,11 +62,12 @@ class Post(TitleAbstractBase,
             except Exception:
                 # Bare 'except' because we could get a variety
                 # of HTTP-related exceptions.
-                logging.warning('Error pinging Goole while saving %s.' \
+                logging.warning('Error pinging Google while saving %s.' \
                                     % self)
         else:
             logging.debug('Not pinging Google while saving %s, DEBUG=True.' \
                             % self)
+
 
 
 def _pre_save(sender, instance, **kwargs):

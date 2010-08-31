@@ -7,9 +7,19 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sitemaps import ping_google
 
-from metadata.models import MetaDataAbstractBase
 
-class Post(MetaDataAbstractBase):
+from metadata.models import TitleAbstractBase, SlugAbstractBase, \
+                            AuthorAbstractBase, DescriptionAbstractBase, \
+                            SitesPublicationAbstractBase, CommentsAbstractBase
+
+
+class Post(TitleAbstractBase,
+           SlugAbstractBase,
+           AuthorAbstractBase,
+           DescriptionAbstractBase,
+           SitesPublicationAbstractBase,
+           CommentsAbstractBase):
+
     class Meta:
         verbose_name = _('post')
         verbose_name_plural = _('posts')

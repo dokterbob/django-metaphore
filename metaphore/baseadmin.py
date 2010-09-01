@@ -51,11 +51,12 @@ class PostAdmin(admin.ModelAdmin):
             if field in fields_orig:
                 fields_orig.remove(field)
 
-        content_fieldset = (_('Content'),
-                           {'fields': fields_orig})
-
-        fieldsets = (base_fieldset, advanced_fieldset, \
-                     related_fieldset, content_fieldset)
+        fieldsets = [base_fieldset, advanced_fieldset, \
+                     related_fieldset]
+                     
+        if fields_orig:
+            fieldsets.append((_('Content'),
+                              {'fields': fields_orig}))
 
         return fieldsets
 

@@ -6,6 +6,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from metaphore.models import *
 
+from django.conf import settings
+
+OEMBED_MAX_WIDTH = getattr(settings, 'METAPHORE_OEMBED_MAX_WIDTH', None)
+OEMBED_MAX_HEIGHT = getattr(settings, 'METAPHORE_OEMBED_MAX_HEIGHT', None)
 
 def make_unique_slug(queryset, value, slug_field='slug'):
     new_slug = orig_slug = slugify(value)
@@ -30,7 +34,9 @@ class OembedAddForm(forms.ModelForm):
         if 'url' in self.cleaned_data:
             url = self.cleaned_data['url']
             try:
-                response = DefaultOEmbedConsumer.embed(url)
+                response = DefaultOEmbedConsumer.embed(url,
+                                maxwidth=OEMBED_MAX_WIDTH,
+                                maxheight=OEMBED_MAX_HEIGHT)
                 logging.debug('Found OEmbed info for %s' % url)
                 for field in response:
                     if hasattr(self.instance, field) and \

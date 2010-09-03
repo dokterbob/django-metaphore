@@ -6,10 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from metaphore.models import *
 
-from django.conf import settings
-
-OEMBED_MAX_WIDTH = getattr(settings, 'METAPHORE_OEMBED_MAX_WIDTH', None)
-OEMBED_MAX_HEIGHT = getattr(settings, 'METAPHORE_OEMBED_MAX_HEIGHT', None)
+from metaphore import settings
 
 def make_unique_slug(queryset, value, slug_field='slug'):
     new_slug = orig_slug = slugify(value)
@@ -36,11 +33,11 @@ class OembedAddForm(forms.ModelForm):
             try:
                 params = {}
                 
-                if OEMBED_MAX_WIDTH:
-                    params.update({'maxwidth': OEMBED_MAX_WIDTH})
+                if settings.OEMBED_MAX_WIDTH:
+                    params.update({'maxwidth': settings.OEMBED_MAX_WIDTH})
                     
-                if OEMBED_MAX_HEIGHT:
-                    params.update({'maxheight': OEMBED_MAX_HEIGHT})
+                if settings.OEMBED_MAX_HEIGHT:
+                    params.update({'maxheight': settings.OEMBED_MAX_HEIGHT})
 
                 response = DefaultOEmbedConsumer.embed(url, **params)
 

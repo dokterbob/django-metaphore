@@ -5,9 +5,15 @@ from django.contrib import admin
 from metaphore.baseadmin import PostAdmin
 from metaphore.models import *
 from metaphore.forms import * 
+
+if settings.USE_TINYMCE:
+    from tinymce.widgets import TinyMCE
     
 class ArticleAdmin(PostAdmin):
-    pass
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if settings.USE_TINYMCE and db_field.name == 'text':
+            kwargs['widget'] = TinyMCE
+        return super(ArticleAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
 admin.site.register(Article, ArticleAdmin)
 

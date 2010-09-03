@@ -3,6 +3,10 @@ from django.forms.models import modelform_factory
 from django.utils.translation import ugettext as _
 from django.contrib import admin
 
+from metaphore import settings
+
+if settings.USE_TINYMCE:
+    from tinymce.widgets import TinyMCE
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'create_date', 'modify_date', \
@@ -104,3 +108,9 @@ class PostAdmin(admin.ModelAdmin):
                 request.POST = postdict
 
         return super(PostAdmin, self).change_view(request, *args, **kwargs)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if settings.USE_TINYMCE and db_field.name == 'description':
+            kwargs['widget'] = TinyMCE
+        return super(PostAdmin,self).formfield_for_dbfield(db_field,**kwargs)
+

@@ -21,7 +21,7 @@ class Post(TitleAbstractBase,
            SitesPublicationAbstractBase,
            CommentsAbstractBase):
 
-    class Meta:
+    class Meta(SitesPublicationAbstractBase.Meta):
         verbose_name = _('post')
         verbose_name_plural = _('posts')
 

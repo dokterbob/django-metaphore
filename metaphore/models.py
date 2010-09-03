@@ -36,7 +36,11 @@ class EmbeddedRich(OembedAbstractBase):
     width = models.SmallIntegerField(blank=True, null=True)
     height = models.SmallIntegerField(blank=True, null=True)
 
-class EmbeddedVideo(EmbeddedRich):        
+class EmbeddedVideo(OembedAbstractBase):        
+    html = models.TextField(blank=True)
+    width = models.SmallIntegerField(blank=True, null=True)
+    height = models.SmallIntegerField(blank=True, null=True)
+
     duration = models.SmallIntegerField(blank=True, null=True)
     
 class EmbeddedPhoto(OembedAbstractBase):

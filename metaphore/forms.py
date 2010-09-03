@@ -34,9 +34,16 @@ class OembedAddForm(forms.ModelForm):
         if 'url' in self.cleaned_data:
             url = self.cleaned_data['url']
             try:
-                response = DefaultOEmbedConsumer.embed(url,
-                                maxwidth=OEMBED_MAX_WIDTH,
-                                maxheight=OEMBED_MAX_HEIGHT)
+                params = {}
+                
+                if OEMBED_MAX_WIDTH:
+                    params.update({'maxwidth': OEMBED_MAX_WIDTH})
+                    
+                if OEMBED_MAX_HEIGHT:
+                    params.update({'maxheight': OEMBED_MAX_HEIGHT})
+
+                response = DefaultOEmbedConsumer.embed(url, **params)
+
                 logging.debug('Found OEmbed info for %s' % url)
                 for field in response:
                     if hasattr(self.instance, field) and \

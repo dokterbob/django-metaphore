@@ -20,6 +20,7 @@ def metaphore_archive_index(request, queryset=None,
         if not queryset:
             queryset = Post.published_on_site.all()
 
+        content_type = request.GET.get('content_type', content_type)
         if content_type:
             ct = get_object_or_404(ContentType, model=content_type)
             queryset = queryset.filter(content_type=ct)
@@ -46,6 +47,7 @@ def metaphore_archive_year(request, year, queryset=None,
         if not queryset:
             queryset = Post.published_on_site.all()
 
+        content_type = request.GET.get('content_type', content_type)
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset = queryset.filter(content_type=ct)
@@ -72,6 +74,7 @@ def metaphore_archive_month(request, year, month, queryset=None,
         if not queryset:
             queryset = Post.published_on_site.all()
 
+        content_type = request.GET.get('content_type', content_type)
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset = queryset.filter(content_type=ct)
@@ -99,6 +102,7 @@ def metaphore_archive_day(request, year, month, day, queryset=None,
         if not queryset:
             queryset = Post.published_on_site.all()
 
+        content_type = request.GET.get('content_type', content_type)
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset = queryset.filter(content_type=ct)
@@ -127,6 +131,7 @@ def metaphore_object_detail(request, year, month, day, queryset=None,
         if not queryset:
             queryset = Post.published_on_site.all()
 
+        content_type = request.GET.get('content_type', content_type)
         if content_type:
             ct = get_object_or_404(ContentType, name=content_type)
             queryset = queryset.filter(content_type=ct)

@@ -98,7 +98,7 @@ def metaphore_archive_year(request, year, queryset=None,
                allow_empty=False, context_processors=None,
                template_object_name='object', mimetype=None,
                make_object_list=True, allow_future=False,
-               content_type=None, author=None):
+               content_type=None, tags=None, author=None):
 
     queryset, extra_context = metaphore_filters(request, queryset,
                                                 extra_context,
@@ -117,7 +117,8 @@ def metaphore_archive_month(request, year, month, queryset=None,
                 template_loader=loader, extra_context=None,
                 allow_empty=False, context_processors=None,
                 template_object_name='object', mimetype=None,
-                allow_future=False, content_type=None, author=None):
+                allow_future=False, content_type=None, tags=None, 
+                author=None):
 
     queryset, extra_context = metaphore_filters(request, queryset,
                                                 extra_context,
@@ -137,7 +138,7 @@ def metaphore_archive_day(request, year, month, day, queryset=None,
               extra_context=None, allow_empty=False,
               context_processors=None,
               template_object_name='object', mimetype=None,
-              allow_future=False, content_type=None, author=None):
+              allow_future=False, content_type=None, tags=None, author=None):
 
     queryset, extra_context = metaphore_filters(request, queryset,
                                                 extra_context,
@@ -158,7 +159,8 @@ def metaphore_object_detail(request, year, month, day, queryset=None,
                 template_name_field=None, template_loader=loader,
                 extra_context=None, context_processors=None,
                 template_object_name='object', mimetype=None,
-                allow_future=False, content_type=None, author=None):
+                allow_future=False, content_type=None, tags=None,
+                author=None):
 
     queryset, extra_context = metaphore_filters(request, queryset,
                                                 extra_context,

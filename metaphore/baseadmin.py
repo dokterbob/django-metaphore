@@ -75,6 +75,9 @@ class PostAdmin(admin.ModelAdmin):
 
         if request.user.is_superuser:
             return True
+        
+        if request.user.has_perm('metaphore.change_author'):
+            return True
 
         return False
 

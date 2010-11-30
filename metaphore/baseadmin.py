@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 from django import forms
 from django.forms.models import modelform_factory
 from django.utils.translation import ugettext as _
@@ -77,7 +81,11 @@ class PostAdmin(admin.ModelAdmin):
             return True
         
         if request.user.has_perm('metaphore.change_author'):
+            logger.debug('User has change_author permission.')
+
             return True
+        
+        logger.debug('Denying permission to this object.')
 
         return False
 
@@ -85,7 +93,10 @@ class PostAdmin(admin.ModelAdmin):
         qs = super(PostAdmin, self).queryset(request)
 
         if not request.user.has_perm('metaphore.change_author'):
+            logger.debug('This user can only change certain items.')
             return qs.filter(author=request.user)
+    
+        logger.debug('This user can change all!')
 
         return qs
 

@@ -81,6 +81,15 @@ class PostAdmin(admin.ModelAdmin):
 
         return False
 
+    def queryset(self, request):
+        qs = super(PostAdmin, self).queryset(request)
+
+        if not request.user.has_perm('metaphore.change_author'):
+            return qs.filter(author=request.user)
+
+        return qs
+
+
     # A little hack found in
     # http://django.freelancernepal.com/topics/django-newforms-admin/
     def add_view(self, request, *args, **kwargs):

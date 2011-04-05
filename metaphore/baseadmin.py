@@ -33,7 +33,7 @@ class PostAdmin(admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         base_fieldset =     (_('General'),
-                             {'fields' : ('title', 'slug', 'description','publish')})
+                             {'fields' : ('title', 'slug', 'description', 'publish', 'tags')})
         advanced_fieldset = (_('Advanced options'),
                              {'classes': ('collapse', ),
                               'fields': ('publish', 'publish_date', \

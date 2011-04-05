@@ -20,17 +20,6 @@ def make_unique_slug(queryset, value, slug_field='slug'):
 
     return new_slug
 
-
-from django.conf import settings
-OEMBED_WIDTH = getattr(settings, 'OEMBED_WIDTH', None)
-OEMBED_HEIGHT = getattr(settings, 'OEMBED_HEIGHT', None)
-
-opt = {}
-if OEMBED_WIDTH:
-    opt.update({'width':int(OEMBED_WIDTH)})
-if OEMBED_HEIGHT:
-    opt.update({'height':int(OEMBED_HEIGHT)})
-
 class OembedAddForm(forms.ModelForm):
     """Form for Link"""
 

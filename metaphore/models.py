@@ -12,6 +12,7 @@ class Article(PostAbstractBase):
     images = models.ManyToManyField(Image, blank=True, null=True, verbose_name='afbeeldingen')
 
 
+
 class Download(PostAbstractBase):
     download = models.FileField(upload_to='downloads')
 

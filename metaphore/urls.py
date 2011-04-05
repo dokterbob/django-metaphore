@@ -20,4 +20,3 @@ blog_urls = patterns('metaphore.views',
 )
 
 urlpatterns = feed_urls + blog_urls
-

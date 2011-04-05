@@ -1,4 +1,4 @@
-from sorl.thumbnail.fields import ImageWithThumbnailsField
+from sorl.thumbnail import ImageField
 
 import logging
 
@@ -6,11 +6,12 @@ from django.db import models
 
 from basemodels import Post, PostAbstractBase
 
+from images.models import Image
+
 
 class Article(PostAbstractBase):
     text = models.TextField()
     images = models.ManyToManyField(Image, blank=True, null=True, verbose_name='afbeeldingen')
-
 
 
 class Download(PostAbstractBase):
@@ -58,3 +59,7 @@ class EmbeddedVideo(OembedAbstractBase):
 class EmbeddedPhoto(OembedAbstractBase):
     width = models.SmallIntegerField(blank=True, null=True)
     height = models.SmallIntegerField(blank=True, null=True)
+
+
+class Photo(PostAbstractBase):
+    photo = ImageField(upload_to='metaphore_images')

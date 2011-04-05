@@ -1,5 +1,7 @@
 import logging
 
+from sorl.thumbnail.admin import AdminImageMixin
+
 from django.contrib import admin
 
 from metaphore.baseadmin import PostAdmin
@@ -75,7 +77,7 @@ class EmbeddedRichAdmin(OembedAdmin):
 
 admin.site.register(EmbeddedRich, EmbeddedRichAdmin)
 
-class PhotoAdmin(PostAdmin):
+class PhotoAdmin(AdminImageMixin, PostAdmin):
 
     def thumbnail(self, obj):
         """

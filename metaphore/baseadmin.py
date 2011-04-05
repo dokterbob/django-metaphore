@@ -26,6 +26,11 @@ class PostAdmin(admin.ModelAdmin):
 
     date_hierarchy = 'publish_date'
 
+    def make_published(self, request, queryset):
+        queryset.update(publish=True)
+    make_published.short_description = "Mark selected posts as published"
+    
+    
     def get_fieldsets(self, request, obj=None):
         base_fieldset = (_('General'),
                          {'fields': ('title', 'slug', 'description', 'tags')})

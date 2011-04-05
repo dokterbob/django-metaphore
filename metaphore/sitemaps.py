@@ -2,8 +2,6 @@ from django.contrib.sitemaps import Sitemap
 from basemodels import Post
 
 class PostSitemap(Sitemap):
-    changefreq = 'weekly'
-    
     def lastmod(self, item):
         return item.modify_date
     

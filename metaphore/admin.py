@@ -2,14 +2,18 @@ import logging
 
 from django.contrib import admin
 
-from baseadmin import PostAdmin
-from models import *
-from forms import * 
+from metaphore.baseadmin import PostAdmin
+from metaphore.models import *
+from metaphore.forms import * 
+
+if settings.USE_TINYMCE:
+    from tinymce.widgets import TinyMCE
     
 class ArticleAdmin(PostAdmin):
-    class Media:
-        js = ('/static/tiny_mce/tiny_mce.js','/static/tiny_mce/textareas_noimage.js')
-    
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if settings.USE_TINYMCE and db_field.name == 'text':
+            kwargs['widget'] = TinyMCE
+        return super(ArticleAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
 admin.site.register(Article, ArticleAdmin)
 
@@ -22,11 +26,20 @@ class OembedAdmin(PostAdmin):
     prepopulated_fields = {}
         
     def save_model(self, request, obj, form, change):
-        if not obj.id or not obj.author:
+        if not change:
+            # We're making a new object here and should set decent default
+            # values for author and sites
+            logging.debug('New oembed object. Settings default author')
+            
             obj.author = request.user
-            obj.save()
-        
+                
         super(OembedAdmin, self).save_model(request, obj, form, change)
+        
+        if not change:
+            logging.debug('New oembed object. Settings default sites')
+
+            from django.contrib.sites.models import Site
+            obj.sites = Site.objects.all()
     
     def get_form(self, request, obj=None, **kwargs):
         if not obj:

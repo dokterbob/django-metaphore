@@ -13,6 +13,8 @@ from metadata.models import TitleAbstractBase, SlugAbstractBase, \
                             AuthorAbstractBase, DescriptionAbstractBase, \
                             SitesPublicationAbstractBase, CommentsAbstractBase
 
+from metaphore.settings import TAGS_REQUIRED
+
 
 class Post(TitleAbstractBase,
            SlugAbstractBase,
@@ -33,7 +35,7 @@ class Post(TitleAbstractBase,
     links = models.ManyToManyField('self', verbose_name=_('related posts'), \
                                    related_name='links', null=True, \
                                    blank=True, symmetrical=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=not TAGS_REQUIRED)
 
 
     @models.permalink

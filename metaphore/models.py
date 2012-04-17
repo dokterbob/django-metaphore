@@ -1,17 +1,23 @@
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
 from sorl.thumbnail import ImageField
 
-import logging
+from .basemodels import PostAbstractBase, Post
 
-from django.db import models
 
-from basemodels import Post, PostAbstractBase
+class ArticleImage(models.Model):
+    class Meta:
+        verbose_name = _('image')
+        verbose_name_plural = _('images')
 
-from images.models import Image
+    title = models.CharField(blank=True, max_length=100)
+    image = ImageField(upload_to='article_images')
 
 
 class Article(PostAbstractBase):
     text = models.TextField()
-    images = models.ManyToManyField(Image, blank=True, null=True, verbose_name='afbeeldingen')
+    images = models.ManyToManyField(ArticleImage, blank=True, null=True)
 
 
 class Download(PostAbstractBase):

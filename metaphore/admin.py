@@ -10,8 +10,15 @@ from metaphore.forms import *
 
 if settings.USE_TINYMCE:
     from tinymce.widgets import TinyMCE
-    
+
+
+class ArticleImageInline(AdminImageMixin, admin.TabularInline):
+    model = ArticleImage
+
+
 class ArticleAdmin(PostAdmin):
+    inlines = (ArticleImageInline, )
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         if settings.USE_TINYMCE and db_field.name == 'text':
             kwargs['widget'] = TinyMCE

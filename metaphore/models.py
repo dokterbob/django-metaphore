@@ -6,18 +6,18 @@ from sorl.thumbnail import ImageField
 from .basemodels import PostAbstractBase, Post
 
 
+class Article(PostAbstractBase):
+    text = models.TextField()
+
+
 class ArticleImage(models.Model):
     class Meta:
         verbose_name = _('image')
         verbose_name_plural = _('images')
 
+    article = models.ForeignKey(Article)
     title = models.CharField(blank=True, max_length=100)
     image = ImageField(upload_to='article_images')
-
-
-class Article(PostAbstractBase):
-    text = models.TextField()
-    images = models.ManyToManyField(ArticleImage, blank=True, null=True)
 
 
 class Download(PostAbstractBase):

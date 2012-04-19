@@ -1,5 +1,4 @@
 import logging
-
 logger = logging.getLogger(__name__)
 
 from django import forms
@@ -32,8 +31,8 @@ class PostAdmin(admin.ModelAdmin):
     make_published.short_description = "Publish selected items"
 
     def get_fieldsets(self, request, obj=None):
-        base_fieldset = (_('General'),
-                         {'fields': ('title', 'slug', 'description', 'tags')})
+        base_fieldset =     (_('General'),
+                             {'fields' : ('title', 'slug', 'description', 'publish', 'tags')})
         advanced_fieldset = (_('Advanced options'),
                              {'classes': ('collapse', ),
                               'fields': ('publish', 'publish_date', \

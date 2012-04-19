@@ -1,5 +1,7 @@
 import logging
 
+from sorl.thumbnail.admin import AdminImageMixin
+
 from django.contrib import admin
 
 from metaphore.baseadmin import PostAdmin
@@ -8,8 +10,15 @@ from metaphore.forms import *
 
 if settings.USE_TINYMCE:
     from tinymce.widgets import TinyMCE
-    
+
+
+class ArticleImageInline(AdminImageMixin, admin.TabularInline):
+    model = ArticleImage
+
+
 class ArticleAdmin(PostAdmin):
+    inlines = (ArticleImageInline, )
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         if settings.USE_TINYMCE and db_field.name == 'text':
             kwargs['widget'] = TinyMCE
@@ -74,3 +83,19 @@ class EmbeddedRichAdmin(OembedAdmin):
     add_form = EmbeddedRichAddForm
 
 admin.site.register(EmbeddedRich, EmbeddedRichAdmin)
+
+class PhotoAdmin(AdminImageMixin, PostAdmin):
+
+    def thumbnail(self, obj):
+        """
+        Display thumbnail-size image of ImageWithThumbnailsField in admin list view
+        """
+        thumbnail = obj.photo.thumbnail_tag
+        return '%s' % (thumbnail)
+    thumbnail.short_description = 'thumbnail'
+    thumbnail.allow_tags = True
+
+    list_display = ('title', 'create_date','modify_date', 'publish', 'publish_date', 'thumbnail')
+    
+admin.site.register(Photo, PhotoAdmin)
+    

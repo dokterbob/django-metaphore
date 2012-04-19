@@ -1,12 +1,23 @@
-import logging
-
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
-from basemodels import Post, PostAbstractBase
+from sorl.thumbnail import ImageField
+
+from .basemodels import PostAbstractBase, Post
 
 
 class Article(PostAbstractBase):
     text = models.TextField()
+
+
+class ArticleImage(models.Model):
+    class Meta:
+        verbose_name = _('image')
+        verbose_name_plural = _('images')
+
+    article = models.ForeignKey(Article)
+    title = models.CharField(blank=True, max_length=100)
+    image = ImageField(upload_to='article_images')
 
 
 class Download(PostAbstractBase):
@@ -54,3 +65,7 @@ class EmbeddedVideo(OembedAbstractBase):
 class EmbeddedPhoto(OembedAbstractBase):
     width = models.SmallIntegerField(blank=True, null=True)
     height = models.SmallIntegerField(blank=True, null=True)
+
+
+class Photo(PostAbstractBase):
+    photo = ImageField(upload_to='metaphore_images')

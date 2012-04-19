@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from oembed import DefaultOEmbedConsumer, OEmbedError
 
 from django import forms
@@ -15,11 +18,10 @@ def make_unique_slug(queryset, value, slug_field='slug'):
     count = 0
     while queryset.filter(**{slug_field: new_slug}).exists():
         count += 1
-        logging.debug('Slug %s taken, trying next alternative' % new_slug)
+        logger.debug('Slug %s taken, trying next alternative' % new_slug)
         new_slug = u'%s-%d' % (orig_slug, count)
 
     return new_slug
-
 
 class OembedAddForm(forms.ModelForm):
     """Form for Link"""
@@ -41,24 +43,24 @@ class OembedAddForm(forms.ModelForm):
 
                 response = DefaultOEmbedConsumer.embed(url, **params)
 
-                logging.debug('Found OEmbed info for %s' % url)
+                logger.debug('Found OEmbed info for %s' % url)
                 for field in response:
                     if hasattr(self.instance, field) and \
                             not getattr(self.instance, field):
-                        logging.debug('Setting field %s: %s' \
+                        logger.debug('Setting field %s: %s' \
                                         % (field, response[field]))
                         setattr(self.instance, field, response[field])
 
                         # If we set the title, also set the slug
                         if field == 'title' and not self.instance.slug:
-                            logging.debug('Setting title with slug')
+                            logger.debug('Setting title with slug')
                             
                             self.instance.slug = \
                                 make_unique_slug(Post.objects.all(), \
                                                  response['title'])
 
             except OEmbedError, e:
-                logging.warn('Something went wrong with OEmbed: %s' % e)
+                logger.warn('Something went wrong with OEmbed: %s' % e)
 
                 raise forms.ValidationError(_('Something went wrong looking \
                     up embed information for this URL: %s') % e)
